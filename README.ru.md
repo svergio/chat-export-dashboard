@@ -95,6 +95,10 @@ React 19, TypeScript, Vite; пять скинов провайдеров.
 
 - [DonationAlerts — svwergio_mel](https://www.donationalerts.com/r/svwergio_mel)
 
+## Участие в разработке
+
+Скины и локали дашборда: [CONTRIBUTING.md](https://github.com/svergio/chat-export-extension/blob/main/CONTRIBUTING.md).
+
 ## Лицензия
 
 [LICENSE](LICENSE).
