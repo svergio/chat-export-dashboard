@@ -42,6 +42,33 @@ function applyI18n(root = document) {
       el.textContent = val;
     }
   });
+  root.querySelectorAll('[data-i18n-placeholder]').forEach((el) => {
+    const key = el.getAttribute('data-i18n-placeholder');
+    el.placeholder = t(key);
+  });
+}
+
+async function loadLocale(locale) {
+  try {
+    const res = await fetch(`/dashboard/locales/${locale}.json`);
+    if (res.ok) {
+      window.__localeStrings = await res.json();
+      document.documentElement.lang = locale === 'ru' ? 'ru' : 'en';
+      return;
+    }
+  } catch {
+    /* fallback */
+  }
+  window.__localeStrings = null;
+  document.documentElement.lang = locale === 'ru' ? 'ru' : 'en';
+}
+
+function resolveScheme(schemePref) {
+  if (schemePref === 'auto') {
+    const mq = window.matchMedia('(prefers-color-scheme: light)');
+    return mq.matches ? 'light' : 'dark';
+  }
+  return schemePref;
 }
 
 function initThemeHooks() {
@@ -57,12 +84,15 @@ function initThemeHooks() {
   };
 
   html.dataset.skin = stored.skin === 'default' ? 'chatgpt' : stored.skin;
-  html.dataset.scheme = stored.scheme;
+  html.dataset.scheme = resolveScheme(stored.scheme);
   html.dataset.locale = stored.locale;
-  if (stored.scheme === 'auto') {
-    const mq = window.matchMedia('(prefers-color-scheme: light)');
-    html.dataset.scheme = mq.matches ? 'light' : 'dark';
-  }
+
+  const schemeMq = window.matchMedia('(prefers-color-scheme: light)');
+  schemeMq.addEventListener('change', () => {
+    if (localStorage.getItem('ce_dash_scheme') === 'auto') {
+      html.dataset.scheme = resolveScheme('auto');
+    }
+  });
 
   if (skinSel) {
     skinSel.value = stored.skin;
@@ -77,12 +107,7 @@ function initThemeHooks() {
     schemeSel.addEventListener('change', () => {
       const v = schemeSel.value;
       localStorage.setItem('ce_dash_scheme', v);
-      if (v === 'auto') {
-        const mq = window.matchMedia('(prefers-color-scheme: light)');
-        html.dataset.scheme = mq.matches ? 'light' : 'dark';
-      } else {
-        html.dataset.scheme = v;
-      }
+      html.dataset.scheme = resolveScheme(v);
     });
   }
   if (localeSel) {
@@ -91,19 +116,12 @@ function initThemeHooks() {
       const v = localeSel.value;
       localStorage.setItem('ce_dash_locale', v);
       html.dataset.locale = v;
-      if (v !== 'en') {
-        try {
-          const res = await fetch(`/dashboard/locales/${v}.json`);
-          if (res.ok) {
-            window.__localeStrings = await res.json();
-          }
-        } catch {
-          window.__localeStrings = null;
-        }
-      } else {
-        window.__localeStrings = null;
-      }
+      await loadLocale(v);
       applyI18n();
+      if (state.section === 'overview') loadOverview();
+      else if (state.section === 'browsers') loadBrowsers();
+      else if (state.section === 'queues') loadJobs();
+      else if (state.section === 'cache') loadCacheList();
     });
   }
 }
@@ -151,7 +169,7 @@ function formatUptime(ms) {
 }
 
 function formatDate(iso) {
-  if (!iso) return '—';
+  if (!iso) return t('dashEmDash');
   try {
     return new Date(iso).toLocaleString();
   } catch {
@@ -243,7 +261,7 @@ async function onLoginSubmit(ev) {
     showApp(data.username || username);
   } catch (err) {
     if (errEl) {
-      errEl.textContent = err.message || 'Login failed';
+      errEl.textContent = err.message || t('loginFailed');
       errEl.classList.remove('hidden');
     }
   }
@@ -276,39 +294,40 @@ function renderOverview(data) {
         <td>${r.calls}</td>
         <td>${r.okCount}</td>
         <td>${r.errCount}</td>
-        <td>${r.avgMs != null ? r.avgMs : '—'}</td>
+        <td>${r.avgMs != null ? r.avgMs : t('dashEmDash')}</td>
       </tr>`
     )
     .join('');
+  const dash = data.dashboard?.enabled ? t('enabled') : t('off');
   el.innerHTML = `
     <div class="grid-2">
       <div class="card">
         <h3 data-i18n="serverOnline">Server</h3>
         <dl>
-          <div class="stat-row"><dt>Version</dt><dd>${escapeHtml(data.version || '—')}</dd></div>
-          <div class="stat-row"><dt>Uptime</dt><dd>${formatUptime(data.uptimeMs || 0)}</dd></div>
-          <div class="stat-row"><dt>Started</dt><dd>${formatDate(data.startedAt)}</dd></div>
-          <div class="stat-row"><dt>DB</dt><dd class="mono">${escapeHtml(db.path || db.kind || 'sqlite')}</dd></div>
+          <div class="stat-row"><dt>${t('version')}</dt><dd>${escapeHtml(data.version || t('dashEmDash'))}</dd></div>
+          <div class="stat-row"><dt>${t('uptime')}</dt><dd>${formatUptime(data.uptimeMs || 0)}</dd></div>
+          <div class="stat-row"><dt>${t('started')}</dt><dd>${formatDate(data.startedAt)}</dd></div>
+          <div class="stat-row"><dt>${t('database')}</dt><dd class="mono">${escapeHtml(db.path || db.kind || 'sqlite')}</dd></div>
         </dl>
       </div>
       <div class="card">
-        <h3>Hub / bound browser</h3>
+        <h3>${t('hubBoundBrowser')}</h3>
         <dl>
-          <div class="stat-row"><dt>Bound</dt><dd>${escapeHtml(hub.boundBrowserId || '—')}</dd></div>
-          <div class="stat-row"><dt>Connections</dt><dd>${hub.connections ?? '—'}</dd></div>
-          <div class="stat-row"><dt>Dashboard</dt><dd>${data.dashboard?.enabled ? 'enabled' : 'off'}</dd></div>
+          <div class="stat-row"><dt>${t('bound')}</dt><dd>${escapeHtml(hub.boundBrowserId || t('dashEmDash'))}</dd></div>
+          <div class="stat-row"><dt>${t('connections')}</dt><dd>${hub.connections ?? t('dashEmDash')}</dd></div>
+          <div class="stat-row"><dt>${t('dashboard')}</dt><dd>${dash}</dd></div>
         </dl>
       </div>
     </div>
     <div class="card" style="margin-bottom:1rem">
-      <h3>Job queue counts</h3>
-      ${queueRows || '<p class="empty-hint">No jobs in database.</p>'}
+      <h3>${t('jobQueueCounts')}</h3>
+      ${queueRows || `<p class="empty-hint">${t('noJobsInDb')}</p>`}
     </div>
-    <h3 style="margin-bottom:0.5rem">MCP tool usage</h3>
+    <h3 style="margin-bottom:0.5rem">${t('mcpToolUsage')}</h3>
     <div class="table-wrap">
       <table class="data">
-        <thead><tr><th>Tool</th><th>Calls</th><th>OK</th><th>Errors</th><th>Avg ms</th></tr></thead>
-        <tbody>${toolRows || '<tr><td colspan="5" class="empty-hint">No metrics yet.</td></tr>'}</tbody>
+        <thead><tr><th>${t('thTool')}</th><th>${t('thCalls')}</th><th>${t('thOk')}</th><th>${t('thErrors')}</th><th>${t('thAvgMs')}</th></tr></thead>
+        <tbody>${toolRows || `<tr><td colspan="5" class="empty-hint">${t('noMetricsYet')}</td></tr>`}</tbody>
       </table>
     </div>
   `;
@@ -353,19 +372,19 @@ async function loadMcpToken() {
     const data = await api('GET', '/mcp-token');
     const active = data.active;
     el.innerHTML = `
-      <h3>MCP server token (cem_)</h3>
+      <h3>${t('mcpServerToken')}</h3>
       ${
         active
           ? `<dl>
-          <div class="stat-row"><dt>ID</dt><dd class="mono">${escapeHtml(active.id)}</dd></div>
-          <div class="stat-row"><dt>Fingerprint</dt><dd class="mono">${escapeHtml(active.fingerprint)}</dd></div>
-          <div class="stat-row"><dt>Created</dt><dd>${formatDate(active.createdAt)}</dd></div>
-          <div class="stat-row"><dt>Last used</dt><dd>${formatDate(active.lastUsedAt)}</dd></div>
+          <div class="stat-row"><dt>${t('thId')}</dt><dd class="mono">${escapeHtml(active.id)}</dd></div>
+          <div class="stat-row"><dt>${t('thFingerprint')}</dt><dd class="mono">${escapeHtml(active.fingerprint)}</dd></div>
+          <div class="stat-row"><dt>${t('thCreated')}</dt><dd>${formatDate(active.createdAt)}</dd></div>
+          <div class="stat-row"><dt>${t('thLastUsed')}</dt><dd>${formatDate(active.lastUsedAt)}</dd></div>
         </dl>
-        <p class="empty-hint">Full token is only shown once after rotate.</p>`
-          : '<p class="empty-hint">No active MCP key.</p>'
+        <p class="empty-hint">${t('tokenShownOnce')}</p>`
+          : `<p class="empty-hint">${t('noActiveMcpKey')}</p>`
       }
-      <p class="empty-hint">Revoked keys: ${data.revokedCount ?? 0}</p>
+      <p class="empty-hint">${t('revokedKeys')}: ${data.revokedCount ?? 0}</p>
       <textarea class="token-snippet" id="mcp-snippet" readonly>${escapeHtml(mcpSnippet())}</textarea>
       <div class="actions-inline">
         <button type="button" class="btn btn--primary" id="btn-rotate-mcp" data-i18n="rotateMcp">${t('rotateMcp')}</button>
@@ -387,13 +406,13 @@ async function loadMcpToken() {
 
 async function onRotateMcp() {
   const box = document.getElementById('mcp-rotate-result');
-  if (!confirm('Rotate MCP token? Old cem_ keys will stop working.')) return;
+  if (!confirm(t('rotateMcpConfirm'))) return;
   try {
     const data = await api('POST', '/mcp-token/rotate');
     if (box) {
       box.classList.remove('hidden');
       box.className = 'msg msg--warn';
-      box.innerHTML = `<strong>New token (copy now):</strong><br><span class="mono">${escapeHtml(data.token)}</span>`;
+      box.innerHTML = `<strong>${t('newTokenCopyNow')}</strong><br><span class="mono">${escapeHtml(data.token)}</span>`;
     }
     const ta = document.getElementById('mcp-snippet');
     if (ta) ta.value = mcpSnippet(data.token);
@@ -411,18 +430,18 @@ function renderBrowsers(browsers) {
   const tbody = document.getElementById('browsers-tbody');
   if (!tbody) return;
   if (!browsers.length) {
-    tbody.innerHTML = '<tr><td colspan="8" class="empty-hint">No browsers enrolled.</td></tr>';
+    tbody.innerHTML = `<tr><td colspan="8" class="empty-hint">${t('noBrowsersEnrolled')}</td></tr>`;
     return;
   }
   tbody.innerHTML = browsers
     .map((b) => {
       const flags = [
-        b.allowCreate ? 'Create' : '',
-        b.allowProjects ? 'Projects' : '',
-        b.allowDestructive ? 'Delete' : ''
+        b.allowCreate ? t('flagCreate') : '',
+        b.allowProjects ? t('flagProjects') : '',
+        b.allowDestructive ? t('flagDelete') : ''
       ]
         .filter(Boolean)
-        .join(', ') || '—';
+        .join(', ') || t('dashEmDash');
       const tabs = Array.isArray(b.tabs) ? b.tabs.length : 0;
       return `<tr>
         <td class="mono">${escapeHtml(b.browserId)}</td>
@@ -430,9 +449,9 @@ function renderBrowsers(browsers) {
         <td>${statusBadge(b.status)}</td>
         <td>${escapeHtml(flags)}</td>
         <td>${tabs}</td>
-        <td>${b.bound ? 'yes' : '—'}</td>
-        <td class="mono">${escapeHtml(b.fingerprint || '—')}</td>
-        <td><button type="button" class="btn btn--sm" data-bind="${escapeHtml(b.browserId)}">Bind</button></td>
+        <td>${b.bound ? t('yes') : t('dashEmDash')}</td>
+        <td class="mono">${escapeHtml(b.fingerprint || t('dashEmDash'))}</td>
+        <td><button type="button" class="btn btn--sm" data-bind="${escapeHtml(b.browserId)}">${t('btnBind')}</button></td>
       </tr>`;
     })
     .join('');
@@ -454,7 +473,7 @@ function renderTabsDetail(browsers) {
   if (!el) return;
   const online = browsers.filter((b) => b.status === 'online' && b.tabs?.length);
   if (!online.length) {
-    el.innerHTML = '<p class="empty-hint">No live tab reports.</p>';
+    el.innerHTML = `<p class="empty-hint">${t('noLiveTabs')}</p>`;
     return;
   }
   el.innerHTML = online
@@ -462,13 +481,13 @@ function renderTabsDetail(browsers) {
       const rows = (b.tabs || [])
         .map(
           (tab) => `<tr>
-          <td>${escapeHtml(tab.platform || '—')}</td>
-          <td class="mono">${escapeHtml(tab.url || tab.title || '—')}</td>
+          <td>${escapeHtml(tab.platform || t('dashEmDash'))}</td>
+          <td class="mono">${escapeHtml(tab.url || tab.title || t('dashEmDash'))}</td>
         </tr>`
         )
         .join('');
       return `<h4 style="margin:1rem 0 0.5rem">${escapeHtml(b.browserLabel)} (${escapeHtml(b.browserId)})</h4>
-      <div class="table-wrap"><table class="data"><thead><tr><th>Platform</th><th>URL / title</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+      <div class="table-wrap"><table class="data"><thead><tr><th>${t('thPlatform')}</th><th>${t('thUrlTitle')}</th></tr></thead><tbody>${rows}</tbody></table></div>`;
     })
     .join('');
 }
@@ -502,7 +521,7 @@ async function onEnrollSubmit(ev) {
     await api('POST', '/browsers/enroll', body);
     if (msg) {
       msg.className = 'msg msg--ok';
-      msg.textContent = `Enrolled ${body.browserId}`;
+      msg.textContent = `${t('enrolledOk')} ${body.browserId}`;
       msg.classList.remove('hidden');
     }
     form.key.value = '';
@@ -526,10 +545,10 @@ async function loadJobs() {
     const jobs = jobsRes.jobs || [];
     if (summary) {
       const q = overview.queue || {};
-      summary.textContent = `Showing ${jobs.length} jobs · queued=${q.queued ?? 0} running=${q.running ?? 0}`;
+      summary.textContent = `${t('jobsSummaryPrefix')} ${jobs.length} ${t('jobsSummaryJobs')} · ${t('jobsSummaryQueued')}=${q.queued ?? 0} ${t('jobsSummaryRunning')}=${q.running ?? 0}`;
     }
     if (!jobs.length) {
-      tbody.innerHTML = '<tr><td colspan="8" class="empty-hint">Queue empty.</td></tr>';
+      tbody.innerHTML = `<tr><td colspan="8" class="empty-hint">${t('queueEmpty')}</td></tr>`;
       return;
     }
     tbody.innerHTML = jobs
@@ -542,9 +561,9 @@ async function loadJobs() {
           <td class="mono">${escapeHtml(j.job_id)}</td>
           <td>${escapeHtml(j.kind)}</td>
           <td>${statusBadge(j.status)}</td>
-          <td>${escapeHtml(j.platform || '—')}</td>
-          <td class="mono">${escapeHtml(j.browserId || '—')}</td>
-          <td>${j.progress != null ? j.progress : '—'}</td>
+          <td>${escapeHtml(j.platform || t('dashEmDash'))}</td>
+          <td class="mono">${escapeHtml(j.browserId || t('dashEmDash'))}</td>
+          <td>${j.progress != null ? j.progress : t('dashEmDash')}</td>
           <td>${formatDate(j.updatedAt)}</td>
           <td>${cancelBtn}</td>
         </tr>`;
@@ -576,7 +595,7 @@ async function loadCacheList() {
     const data = await api('GET', '/cache?limit=200');
     const rows = data.caches || [];
     if (!rows.length) {
-      tbody.innerHTML = '<tr><td colspan="7" class="empty-hint">No cached chats.</td></tr>';
+      tbody.innerHTML = `<tr><td colspan="7" class="empty-hint">${t('noCachedChats')}</td></tr>`;
       return;
     }
     tbody.innerHTML = rows
@@ -584,12 +603,12 @@ async function loadCacheList() {
         (c) => `<tr>
         <td class="mono">${escapeHtml(c.cacheId)}</td>
         <td>${escapeHtml(c.platform)}</td>
-        <td>${escapeHtml(c.title || '—')}</td>
-        <td>${c.totalTurns ?? '—'}</td>
-        <td>${c.totalChars ?? '—'}</td>
+        <td>${escapeHtml(c.title || t('dashEmDash'))}</td>
+        <td>${c.totalTurns ?? t('dashEmDash')}</td>
+        <td>${c.totalChars ?? t('dashEmDash')}</td>
         <td>${formatDate(c.updatedAt)}</td>
         <td>
-          <button type="button" class="btn btn--sm" data-view="${escapeHtml(c.cacheId)}">View</button>
+          <button type="button" class="btn btn--sm" data-view="${escapeHtml(c.cacheId)}">${t('btnView')}</button>
           <button type="button" class="btn btn--sm btn--danger" data-del="${escapeHtml(c.cacheId)}">${t('deleteCache')}</button>
         </td>
       </tr>`
@@ -600,7 +619,7 @@ async function loadCacheList() {
     });
     tbody.querySelectorAll('[data-del]').forEach((btn) => {
       btn.addEventListener('click', async () => {
-        if (!confirm('Delete this cache entry from DB?')) return;
+        if (!confirm(t('confirmDeleteCache'))) return;
         try {
           await api('DELETE', `/cache/${encodeURIComponent(btn.getAttribute('data-del'))}`);
           await loadCacheList();
@@ -623,13 +642,13 @@ async function loadCacheDetail(cacheId) {
     const c = data.cache;
     el.innerHTML = `
       <div class="card">
-        <h3>Cache detail</h3>
+        <h3>${t('cacheDetail')}</h3>
         <dl>
-          <div class="stat-row"><dt>Cache ID</dt><dd class="mono">${escapeHtml(c.cacheId)}</dd></div>
-          <div class="stat-row"><dt>Chat</dt><dd class="mono">${escapeHtml(c.chatId)}</dd></div>
-          <div class="stat-row"><dt>Browser</dt><dd class="mono">${escapeHtml(c.browserId)}</dd></div>
-          <div class="stat-row"><dt>Model</dt><dd>${escapeHtml(c.model || '—')}</dd></div>
-          <div class="stat-row"><dt>Blocks</dt><dd>${c.blocks ?? 0} (max rev ${c.maxRevision ?? '—'})</dd></div>
+          <div class="stat-row"><dt>${t('cacheIdLabel')}</dt><dd class="mono">${escapeHtml(c.cacheId)}</dd></div>
+          <div class="stat-row"><dt>${t('chat')}</dt><dd class="mono">${escapeHtml(c.chatId)}</dd></div>
+          <div class="stat-row"><dt>${t('browser')}</dt><dd class="mono">${escapeHtml(c.browserId)}</dd></div>
+          <div class="stat-row"><dt>${t('model')}</dt><dd>${escapeHtml(c.model || t('dashEmDash'))}</dd></div>
+          <div class="stat-row"><dt>${t('blocks')}</dt><dd>${c.blocks ?? 0} (${t('blocksMaxRev')} ${c.maxRevision ?? t('dashEmDash')})</dd></div>
         </dl>
         ${c.meta ? `<pre class="log-view">${escapeHtml(JSON.stringify(c.meta, null, 2))}</pre>` : ''}
       </div>
@@ -650,7 +669,7 @@ async function loadLogs() {
       if (e.line) return e.line;
       return JSON.stringify(e);
     });
-    view.textContent = lines.join('\n') || '(empty)';
+    view.textContent = lines.join('\n') || t('emptyLog');
     view.scrollTop = view.scrollHeight;
   } catch (err) {
     if (err.status === 401) showLogin();
@@ -679,6 +698,8 @@ function bindUi() {
 
 async function boot() {
   initThemeHooks();
+  const locale = localStorage.getItem('ce_dash_locale') || 'en';
+  await loadLocale(locale);
   applyI18n();
   bindUi();
   try {

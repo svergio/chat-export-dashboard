@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Chat Export Dashboard</title>
     <link rel="stylesheet" href="/dashboard/styles.css" />
+    <link rel="stylesheet" href="/dashboard/skins.css" />
   </head>
   <body>
     <section id="login-screen" class="login-screen">
@@ -37,21 +38,21 @@
         <span class="top-bar__spacer"></span>
         <div class="top-bar__chrome" aria-label="Locale and theme (Agent 16)">
           <select id="locale-select" title="Locale">
-            <option value="en">EN</option>
-            <option value="ru">RU</option>
+            <option value="en" data-i18n="localeEn">EN</option>
+            <option value="ru" data-i18n="localeRu">RU</option>
           </select>
           <select id="scheme-select" title="Theme">
-            <option value="dark">Dark</option>
-            <option value="light">Light</option>
-            <option value="auto">Auto</option>
+            <option value="dark" data-i18n="themeDark">Dark</option>
+            <option value="light" data-i18n="themeLight">Light</option>
+            <option value="auto" data-i18n="themeAuto">Auto</option>
           </select>
           <select id="skin-select" title="Skin">
-            <option value="default">Skin (default)</option>
-            <option value="chatgpt">chatgpt</option>
-            <option value="grok">grok</option>
-            <option value="grok-x">grok-x</option>
-            <option value="copilot">copilot</option>
-            <option value="claude">claude</option>
+            <option value="default" data-i18n="skinDefault">Skin (default)</option>
+            <option value="chatgpt" data-i18n="skinChatgpt">chatgpt</option>
+            <option value="grok" data-i18n="skinGrok">grok</option>
+            <option value="grok-x" data-i18n="skinGrokX">grok-x</option>
+            <option value="copilot" data-i18n="skinCopilot">copilot</option>
+            <option value="claude" data-i18n="skinClaude">claude</option>
           </select>
           <button type="button" class="btn btn--sm" id="btn-logout" data-i18n="signOut">Sign out</button>
         </div>
@@ -85,39 +86,39 @@
                 <div id="enroll-msg" class="hidden"></div>
                 <form id="enroll-form">
                   <div class="form-row">
-                    <label for="enroll-id">browserId</label>
-                    <input id="enroll-id" name="browserId" type="text" required placeholder="b-xxxxxxxx" />
+                    <label for="enroll-id" data-i18n="labelBrowserId">browserId</label>
+                    <input id="enroll-id" name="browserId" type="text" required data-i18n-placeholder="placeholderBrowserId" placeholder="b-xxxxxxxx" />
                   </div>
                   <div class="form-row">
-                    <label for="enroll-key">ceb_ token</label>
-                    <input id="enroll-key" name="key" type="password" required autocomplete="off" placeholder="ceb_..." />
+                    <label for="enroll-key" data-i18n="labelCebToken">ceb_ token</label>
+                    <input id="enroll-key" name="key" type="password" required autocomplete="off" data-i18n-placeholder="placeholderCeb" placeholder="ceb_..." />
                   </div>
                   <div class="form-row">
-                    <label for="enroll-label">Label</label>
-                    <input id="enroll-label" name="browserLabel" type="text" placeholder="optional" />
+                    <label for="enroll-label" data-i18n="labelOptional">Label</label>
+                    <input id="enroll-label" name="browserLabel" type="text" data-i18n-placeholder="placeholderOptional" placeholder="optional" />
                   </div>
                   <div class="form-row">
-                    <label>Permissions</label>
-                    <label><input name="allowCreate" type="checkbox" checked /> allowCreate</label>
-                    <label><input name="allowProjects" type="checkbox" checked /> allowProjects</label>
-                    <label><input name="allowDestructive" type="checkbox" /> allowDestructive</label>
+                    <label data-i18n="labelPermissions">Permissions</label>
+                    <label><input name="allowCreate" type="checkbox" checked /> <span data-i18n="allowCreate">allowCreate</span></label>
+                    <label><input name="allowProjects" type="checkbox" checked /> <span data-i18n="allowProjects">allowProjects</span></label>
+                    <label><input name="allowDestructive" type="checkbox" /> <span data-i18n="allowDestructive">allowDestructive</span></label>
                   </div>
-                  <button type="submit" class="btn btn--primary">Enroll</button>
+                  <button type="submit" class="btn btn--primary" data-i18n="btnEnroll">Enroll</button>
                 </form>
               </div>
             </div>
-            <h3>Browsers</h3>
+            <h3 data-i18n="sectionBrowsers">Browsers</h3>
             <div class="table-wrap">
               <table class="data">
                 <thead>
                   <tr>
-                    <th>browserId</th>
-                    <th>Label</th>
-                    <th>Status</th>
-                    <th>Flags</th>
-                    <th>Tabs</th>
-                    <th>Bound</th>
-                    <th>Fingerprint</th>
+                    <th data-i18n="thBrowserId">browserId</th>
+                    <th data-i18n="thLabel">Label</th>
+                    <th data-i18n="thStatus">Status</th>
+                    <th data-i18n="thFlags">Flags</th>
+                    <th data-i18n="thTabs">Tabs</th>
+                    <th data-i18n="thBound">Bound</th>
+                    <th data-i18n="thFingerprint">Fingerprint</th>
                     <th></th>
                   </tr>
                 </thead>
@@ -138,13 +139,13 @@
               <table class="data">
                 <thead>
                   <tr>
-                    <th>Job ID</th>
-                    <th>Kind</th>
-                    <th>Status</th>
-                    <th>Platform</th>
-                    <th>Browser</th>
-                    <th>Progress</th>
-                    <th>Updated</th>
+                    <th data-i18n="thJobId">Job ID</th>
+                    <th data-i18n="thKind">Kind</th>
+                    <th data-i18n="thStatus">Status</th>
+                    <th data-i18n="thPlatform">Platform</th>
+                    <th data-i18n="thBrowser">Browser</th>
+                    <th data-i18n="thProgress">Progress</th>
+                    <th data-i18n="thUpdated">Updated</th>
                     <th></th>
                   </tr>
                 </thead>
@@ -163,12 +164,12 @@
               <table class="data">
                 <thead>
                   <tr>
-                    <th>cacheId</th>
-                    <th>Platform</th>
-                    <th>Title</th>
-                    <th>Turns</th>
-                    <th>Chars</th>
-                    <th>Updated</th>
+                    <th data-i18n="thCacheId">cacheId</th>
+                    <th data-i18n="thPlatform">Platform</th>
+                    <th data-i18n="thTitle">Title</th>
+                    <th data-i18n="thTurns">Turns</th>
+                    <th data-i18n="thChars">Chars</th>
+                    <th data-i18n="thUpdated">Updated</th>
                     <th></th>
                   </tr>
                 </thead>
