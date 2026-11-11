@@ -113,6 +113,9 @@
   --ce-warn: #ffad1f;
   --ce-danger: #f4212e;
   --ce-radius: 9999px;
+  --ce-radius-card: 16px;
+  --ce-radius-sm: 10px;
+  --ce-radius-pill: 9999px;
   --ce-font: TwitterChirp, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   --ce-bg-elevated: var(--ce-surface);
   --ce-bg-panel: var(--ce-surface-2);
@@ -138,6 +141,9 @@
   --ce-warn: #ffad1f;
   --ce-danger: #f4212e;
   --ce-radius: 9999px;
+  --ce-radius-card: 16px;
+  --ce-radius-sm: 10px;
+  --ce-radius-pill: 9999px;
   --ce-font: TwitterChirp, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   --ce-bg-elevated: var(--ce-surface);
   --ce-bg-panel: var(--ce-surface-2);
@@ -250,13 +256,21 @@
   color-scheme: dark;
 }
 
-[data-skin='grok-x'] .card {
-  border-radius: 16px;
+[data-skin='grok-x'] .login-card,
+[data-skin='grok-x'] .card,
+[data-skin='grok-x'] .table-wrap,
+[data-skin='grok-x'] .log-view,
+[data-skin='grok-x'] input[type='text'],
+[data-skin='grok-x'] input[type='password'],
+[data-skin='grok-x'] textarea:not(.token-snippet) {
+  border-radius: var(--ce-radius-card, 16px);
 }
 
 [data-skin='grok-x'] .btn,
-[data-skin='grok-x'] .btn--primary {
-  border-radius: 9999px;
+[data-skin='grok-x'] .btn--primary,
+[data-skin='grok-x'] .ce-select-btn,
+[data-skin='grok-x'] .badge {
+  border-radius: var(--ce-radius-pill, 9999px);
 }
 
 [data-skin='copilot'] .card {

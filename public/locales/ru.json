@@ -136,5 +136,10 @@
   "skinClaude": "claude",
   "localeEn": "EN",
   "localeRu": "RU",
-  "dashEmDash": "—"
+  "dashEmDash": "—",
+  "browserSlotsTitle": "Слоты браузеров",
+  "browserSlotsHint": "Подключить можно до двух профилей Chrome. Установите расширение во втором профиле, зарегистрируйте ceb_ ключ и держите оба браузера открытыми.",
+  "browserSlot": "Слот",
+  "browserSlotEmpty": "В этом слоте нет браузера",
+  "browserSlotOfflineHelp": "Откройте popup расширения в другом профиле Chrome, подключитесь к hub и зарегистрируйте браузер ниже."
 }

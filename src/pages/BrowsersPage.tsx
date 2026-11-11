@@ -195,6 +195,39 @@ export function BrowsersPage({ t, onUnauthorized }: Props) {
           </form>
         </div>
       </div>
+      <h3>{t('browserSlotsTitle')}</h3>
+      <p className="empty-hint browser-slots-hint">{t('browserSlotsHint')}</p>
+      <div className="browser-slots">
+        {[0, 1].map((slot) => {
+          const row = browsers[slot];
+          const slotOnline = row?.status === 'online';
+          const tone = slotOnline ? 'ok' : row ? 'warn' : 'muted';
+          return (
+            <div key={slot} className={`browser-slot card browser-slot--${tone}`}>
+              <div className="browser-slot__head">
+                <span className={`status-dot status-dot--${tone}`} aria-hidden="true" />
+                <strong>
+                  {t('browserSlot')} {slot + 1}
+                </strong>
+              </div>
+              {row ? (
+                <>
+                  <p className="browser-slot__id mono">{row.browserId}</p>
+                  <p className="browser-slot__meta">
+                    {row.browserLabel || t('dashEmDash')} · {row.status}
+                    {row.tabs?.length ? ` · ${row.tabs.length} ${t('thTabs').toLowerCase()}` : ''}
+                  </p>
+                </>
+              ) : (
+                <>
+                  <p className="browser-slot__empty">{t('browserSlotEmpty')}</p>
+                  <p className="browser-slot__meta">{t('browserSlotOfflineHelp')}</p>
+                </>
+              )}
+            </div>
+          );
+        })}
+      </div>
       <h3>{t('sectionBrowsers')}</h3>
       <div className="table-wrap">
         <table className="data">

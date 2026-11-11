@@ -78,14 +78,33 @@ body {
 }
 
 .status-dot {
+  display: inline-block;
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: var(--ce-text-muted);
+  flex: 0 0 auto;
+  background: var(--ce-muted, var(--ce-text-muted));
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--ce-muted, var(--ce-text-muted)) 18%, transparent);
 }
 
 .status-dot--ok {
-  background: var(--ce-success);
+  background: var(--ce-ok, var(--ce-success));
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--ce-ok, var(--ce-success)) 22%, transparent);
+}
+
+.status-dot--warn {
+  background: var(--ce-warn, var(--ce-warning));
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--ce-warn, var(--ce-warning)) 22%, transparent);
+}
+
+.status-dot--danger {
+  background: var(--ce-danger);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--ce-danger) 22%, transparent);
+}
+
+.status-dot--muted {
+  background: var(--ce-muted, var(--ce-text-muted));
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--ce-muted, var(--ce-text-muted)) 18%, transparent);
 }
 
 .top-bar__spacer {
@@ -98,13 +117,113 @@ body {
   align-items: center;
 }
 
-.top-bar__chrome select {
+.appearance-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.appearance-controls--compact .ce-select-btn {
+  min-width: 108px;
+  max-width: 150px;
+  height: 28px;
+  font-size: 0.8rem;
+}
+
+.ce-select-wrap {
+  position: relative;
+}
+
+.ce-select {
+  position: relative;
+}
+
+.ce-select-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 132px;
+  max-width: 180px;
+  height: 30px;
+  padding: 0 10px;
+  border: 1px solid var(--ce-line, var(--ce-border));
+  border-radius: var(--ce-radius-pill, 9999px);
+  background: var(--ce-surface-2, var(--ce-bg-panel));
+  color: var(--ce-ink, var(--ce-text));
   font: inherit;
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
-  border: 1px solid var(--ce-border);
-  background: var(--ce-bg-panel);
-  color: var(--ce-text);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.ce-select-btn:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--ce-ink, var(--ce-text)) 6%, var(--ce-surface-2, var(--ce-bg-panel)));
+}
+
+.ce-select.is-open .ce-select-btn {
+  border-color: var(--ce-accent);
+}
+
+.ce-select-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.ce-select-leading {
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 auto;
+}
+
+.ce-select-value {
+  flex: 1 1 auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: left;
+}
+
+.ce-select-btn svg:last-child {
+  flex: 0 0 auto;
+  opacity: 0.7;
+}
+
+.ce-select-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 40;
+  min-width: 168px;
+  padding: 4px;
+  border: 1px solid var(--ce-line, var(--ce-border));
+  border-radius: var(--ce-radius-sm, 6px);
+  background: var(--ce-surface, var(--ce-bg-elevated));
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+}
+
+.ce-select-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  border: 0;
+  border-radius: calc(var(--ce-radius-sm, 6px) - 2px);
+  padding: 8px 10px;
+  background: transparent;
+  color: var(--ce-ink, var(--ce-text));
+  font: inherit;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+}
+
+.ce-select-item:hover,
+.ce-select-item.is-active {
+  background: color-mix(in srgb, var(--ce-ink, var(--ce-text)) 8%, transparent);
+}
+
+.ce-select-item svg {
+  flex: 0 0 auto;
 }
 
 .layout {
@@ -128,7 +247,8 @@ body {
   padding: 0.55rem 0.75rem;
   margin-bottom: 2px;
   border: none;
-  border-radius: var(--ce-radius);
+  border-left: 3px solid transparent;
+  border-radius: var(--ce-radius-card, var(--ce-radius));
   background: transparent;
   color: var(--ce-text-muted);
   font: inherit;
@@ -144,6 +264,8 @@ body {
   background: var(--ce-bg-panel);
   color: var(--ce-accent);
   font-weight: 500;
+  border-left-color: var(--ce-accent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ce-accent) 18%, transparent);
 }
 
 .main {
@@ -176,8 +298,14 @@ body {
 .card {
   background: var(--ce-bg-panel);
   border: 1px solid var(--ce-border);
-  border-radius: var(--ce-radius);
+  border-radius: var(--ce-radius-card, var(--ce-radius));
   padding: 1rem 1.1rem;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.card:hover {
+  border-color: color-mix(in srgb, var(--ce-accent) 35%, var(--ce-border));
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--ce-accent) 12%, transparent);
 }
 
 .card h3 {
@@ -216,11 +344,16 @@ body {
 .btn {
   font: inherit;
   padding: 0.45rem 0.85rem;
-  border-radius: 6px;
+  border-radius: var(--ce-radius-sm, 6px);
   border: 1px solid var(--ce-border);
   background: var(--ce-bg-elevated);
   color: var(--ce-text);
   cursor: pointer;
+}
+
+[data-skin='grok-x'] .btn,
+[data-skin='grok-x'] .ce-select-btn {
+  border-radius: var(--ce-radius-pill, 9999px);
 }
 
 .btn:hover:not(:disabled) {
@@ -236,13 +369,15 @@ body {
 .btn--primary {
   background: var(--ce-accent);
   border-color: var(--ce-accent);
-  color: #fff;
+  color: var(--ce-accent-ink, #ffffff);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--ce-accent-ink, #fff) 12%, var(--ce-accent)),
+    0 1px 2px rgba(0, 0, 0, 0.12);
 }
 
 .btn--primary:hover:not(:disabled) {
   background: var(--ce-accent-hover);
   border-color: var(--ce-accent-hover);
-  color: #fff;
+  color: var(--ce-accent-ink, #ffffff);
 }
 
 .btn--danger {
@@ -277,7 +412,7 @@ select.input {
   min-width: 160px;
   padding: 0.45rem 0.6rem;
   border: 1px solid var(--ce-border);
-  border-radius: 6px;
+  border-radius: var(--ce-radius-sm, 6px);
   background: var(--ce-bg);
   color: var(--ce-text);
   font: inherit;
@@ -290,7 +425,7 @@ input[type='checkbox'] {
 .table-wrap {
   overflow-x: auto;
   border: 1px solid var(--ce-border);
-  border-radius: var(--ce-radius);
+  border-radius: var(--ce-radius-card, var(--ce-radius));
 }
 
 table.data {
@@ -326,10 +461,16 @@ table.data tr:hover td {
 .badge {
   display: inline-block;
   padding: 0.15rem 0.45rem;
-  border-radius: 4px;
+  border-radius: var(--ce-radius-sm, 4px);
   font-size: 0.72rem;
   font-weight: 500;
   text-transform: uppercase;
+}
+
+.badge--with-dot {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
 }
 
 .badge--online {
@@ -372,7 +513,7 @@ table.data tr:hover td {
   line-height: 1.4;
   background: var(--ce-bg);
   border: 1px solid var(--ce-border);
-  border-radius: var(--ce-radius);
+  border-radius: var(--ce-radius-card, var(--ce-radius));
   padding: 0.75rem;
   max-height: 420px;
   overflow: auto;
@@ -411,11 +552,33 @@ table.data tr:hover td {
   color: var(--ce-warning);
 }
 
+.login-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.login-chrome {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding: 0.65rem 1.25rem;
+  border-bottom: 1px solid var(--ce-border);
+  background: var(--ce-bg-elevated);
+}
+
+.login-chrome__brand {
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
 .login-screen {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 100vh;
+  flex: 1;
   padding: 2rem;
 }
 
@@ -424,8 +587,14 @@ table.data tr:hover td {
   max-width: 380px;
   background: var(--ce-bg-panel);
   border: 1px solid var(--ce-border);
-  border-radius: var(--ce-radius);
+  border-radius: var(--ce-radius-card, var(--ce-radius));
   padding: 1.75rem;
+}
+
+.btn--sign-in {
+  width: 100%;
+  margin-top: 0.25rem;
+  font-weight: 600;
 }
 
 .login-card h1 {
@@ -463,4 +632,47 @@ table.data tr:hover td {
   color: var(--ce-text-muted);
   font-size: 0.9rem;
   padding: 1rem 0;
+}
+
+.browser-slots {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.browser-slots-hint {
+  padding: 0 0 0.75rem;
+  margin: -0.5rem 0 0;
+}
+
+.browser-slot__head {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.browser-slot__id {
+  margin: 0 0 0.35rem;
+  font-size: 0.8rem;
+}
+
+.browser-slot__meta {
+  margin: 0;
+  color: var(--ce-text-muted);
+  font-size: 0.85rem;
+}
+
+.browser-slot__empty {
+  margin: 0 0 0.35rem;
+  font-weight: 500;
+}
+
+.browser-slot--ok {
+  border-color: color-mix(in srgb, var(--ce-success) 45%, var(--ce-border));
+}
+
+.browser-slot--warn {
+  border-color: color-mix(in srgb, var(--ce-warning) 45%, var(--ce-border));
 }

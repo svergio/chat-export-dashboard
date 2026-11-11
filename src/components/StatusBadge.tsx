@@ -6,6 +6,16 @@ function escapeHtml(s: string): string {
     .replace(/"/g, '&quot;');
 }
 
+function dotTone(status: string): string | null {
+  const s = String(status || '').toLowerCase();
+  if (s === 'online') return 'ok';
+  if (s === 'offline' || s === 'registered') return 'muted';
+  if (s === 'queued' || s === 'waiting_host') return 'warn';
+  if (s === 'error' || s === 'failed') return 'danger';
+  if (s === 'running') return 'ok';
+  return null;
+}
+
 export function StatusBadge({ status }: { status: string }) {
   const s = String(status || '').toLowerCase();
   let extra = '';
@@ -14,5 +24,11 @@ export function StatusBadge({ status }: { status: string }) {
   else if (s === 'queued' || s === 'waiting_host') extra = ' badge--queued';
   else if (s === 'running') extra = ' badge--running';
   else if (s === 'error' || s === 'failed') extra = ' badge--error';
-  return <span className={`badge${extra}`}>{escapeHtml(status)}</span>;
+  const tone = dotTone(status);
+  return (
+    <span className={`badge badge--with-dot${extra}`}>
+      {tone ? <span className={`status-dot status-dot--${tone}`} aria-hidden="true" /> : null}
+      {escapeHtml(status)}
+    </span>
+  );
 }
