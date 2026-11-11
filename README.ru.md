@@ -19,7 +19,7 @@ MCP и CLI неудобны, когда задача зависла, брауз�
 | Очереди | Пайплайн задач |
 | Кеш | Временный кеш чатов |
 | Логи | Поток логов сервера |
-| Настройки | EN/RU, скины провайдеров, MCP |
+| Настройки | EN/RU, 8 скинов провайдеров, MCP |
 
 Сессия: cookie `ce_dash_sid`; API: `/dashboard/api`.
 
@@ -45,7 +45,7 @@ npm ci && npm run build
 npm run dev   # proxy /dashboard/api на сервер
 ```
 
-React 19, TypeScript, Vite; пять скинов провайдеров.
+React 19, TypeScript, Vite; восемь скинов (ChatGPT, Grok, Grok-X, Copilot, Claude, Qwen, DeepSeek, Perplexity).
 
 ## Docker (опциональный фронт)
 
@@ -69,7 +69,6 @@ React 19, TypeScript, Vite; пять скинов провайдеров.
 ## Поддержка проекта
 
 - [DonationAlerts — svwergio_mel](https://www.donationalerts.com/r/svwergio_mel)
-- Крипто — только по опубликованным адресам в README сервера, с проверкой сети.
 
 ## Участие в разработке
 

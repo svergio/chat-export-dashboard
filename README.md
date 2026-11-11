@@ -19,7 +19,7 @@ MCP and CLI are powerful but opaque when jobs stall, a browser drops offline, or
 | Queues | Job pipeline by status and browser |
 | Cache | Temp chat cache entries |
 | Logs | Server log stream (live/pause, filters) |
-| Settings | Language (EN/RU), skins (5 providers), MCP token helpers |
+| Settings | Language (EN/RU), skins (8 providers), MCP token helpers |
 
 Session auth uses cookie `ce_dash_sid`; APIs under `/dashboard/api` on the server host.
 
@@ -63,7 +63,7 @@ Vite proxies `/dashboard/api` to the running server (adjust `vite.config.ts` if 
 
 ## Stack
 
-React 19, TypeScript, Vite. Five provider skins (ChatGPT, Grok, Grok-X, Claude, Copilot) with light / dark / auto.
+React 19, TypeScript, Vite. Eight provider skins (ChatGPT, Grok, Grok-X, Copilot, Claude, Qwen, DeepSeek, Perplexity) with light / dark / auto.
 
 ## Security
 
@@ -83,7 +83,6 @@ React 19, TypeScript, Vite. Five provider skins (ChatGPT, Grok, Grok-X, Claude, 
 ## Support the project
 
 - **Tip (fiat):** [DonationAlerts — svwergio_mel](https://www.donationalerts.com/r/svwergio_mel)
-- **Crypto (optional):** follow maintainer-published addresses in server README Support section; verify network before transfer.
 
 Tips are voluntary.
 
