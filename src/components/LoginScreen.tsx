@@ -2,16 +2,16 @@ import { FormEvent, useState } from 'react';
 import { api } from '../api/client';
 import { ApiClientError } from '../api/client';
 import { AppearanceControls } from './AppearanceControls';
-import type { LocaleCode, SchemePref, Skin } from '../hooks/useTheme';
+import type { LocalePref, SchemePref, Skin } from '../hooks/useTheme';
 
 type Props = {
   t: (key: string) => string;
   onSuccess: (username: string) => void;
   initialError?: string;
-  locale: LocaleCode;
+  localePref: LocalePref;
   schemePref: SchemePref;
   skin: Skin;
-  onLocale: (v: LocaleCode) => void;
+  onLocale: (v: LocalePref) => void;
   onScheme: (v: SchemePref) => void;
   onSkin: (v: Skin) => void;
 };
@@ -20,7 +20,7 @@ export function LoginScreen({
   t,
   onSuccess,
   initialError,
-  locale,
+  localePref,
   schemePref,
   skin,
   onLocale,
@@ -52,7 +52,7 @@ export function LoginScreen({
         <span className="login-chrome__brand">{t('appTitle')}</span>
         <AppearanceControls
           t={t}
-          locale={locale}
+          localePref={localePref}
           schemePref={schemePref}
           skin={skin}
           onLocale={onLocale}

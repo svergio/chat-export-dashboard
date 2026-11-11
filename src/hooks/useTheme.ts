@@ -1,14 +1,25 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import {
+  type LocaleCode,
+  type LocalePref,
+  parseLocalePref,
+  resolveLocale
+} from '../i18n/resolveLocale';
 
+export type { LocaleCode, LocalePref };
 export type Skin = 'default' | 'chatgpt' | 'grok' | 'grok-x' | 'copilot' | 'claude';
 export type SchemePref = 'dark' | 'light' | 'auto';
-export type LocaleCode = 'en' | 'ru';
 
 function resolveScheme(schemePref: SchemePref): 'dark' | 'light' {
   if (schemePref === 'auto') {
     return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
   }
   return schemePref;
+}
+
+function parseSchemePref(stored: string | null): SchemePref {
+  if (stored === 'dark' || stored === 'light' || stored === 'auto') return stored;
+  return 'auto';
 }
 
 function skinToDataset(skin: Skin): string {
@@ -19,12 +30,14 @@ export function useTheme() {
   const [skin, setSkinState] = useState<Skin>(
     () => (localStorage.getItem('ce_dash_skin') as Skin) || 'default'
   );
-  const [schemePref, setSchemePrefState] = useState<SchemePref>(
-    () => (localStorage.getItem('ce_dash_scheme') as SchemePref) || 'dark'
+  const [schemePref, setSchemePrefState] = useState<SchemePref>(() =>
+    parseSchemePref(localStorage.getItem('ce_dash_scheme'))
   );
-  const [locale, setLocaleState] = useState<LocaleCode>(
-    () => (localStorage.getItem('ce_dash_locale') as LocaleCode) || 'en'
+  const [localePref, setLocalePrefState] = useState<LocalePref>(() =>
+    parseLocalePref(localStorage.getItem('ce_dash_locale'))
   );
+
+  const locale = useMemo(() => resolveLocale(localePref), [localePref]);
 
   const applyDom = useCallback(
     (s: Skin, scheme: SchemePref, loc: LocaleCode) => {
@@ -62,10 +75,18 @@ export function useTheme() {
     setSchemePrefState(v);
   };
 
-  const setLocale = (v: LocaleCode) => {
+  const setLocalePref = (v: LocalePref) => {
     localStorage.setItem('ce_dash_locale', v);
-    setLocaleState(v);
+    setLocalePrefState(v);
   };
 
-  return { skin, schemePref, locale, setSkin, setSchemePref, setLocale };
+  return {
+    skin,
+    schemePref,
+    localePref,
+    locale,
+    setSkin,
+    setSchemePref,
+    setLocalePref
+  };
 }

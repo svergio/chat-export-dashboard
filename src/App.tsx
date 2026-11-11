@@ -13,7 +13,8 @@ import { CachePage } from './pages/CachePage';
 import { LogsPage } from './pages/LogsPage';
 
 export function App() {
-  const { skin, schemePref, locale, setSkin, setSchemePref, setLocale } = useTheme();
+  const { skin, schemePref, localePref, locale, setSkin, setSchemePref, setLocalePref } =
+    useTheme();
   const { t } = useLocale(locale);
   const [user, setUser] = useState<string | null>(null);
   const [section, setSection] = useState<Section>('overview');
@@ -64,10 +65,10 @@ export function App() {
       <LoginScreen
         t={t}
         initialError={bootError}
-        locale={locale}
+        localePref={localePref}
         schemePref={schemePref}
         skin={skin}
-        onLocale={setLocale}
+        onLocale={setLocalePref}
         onScheme={setSchemePref}
         onSkin={setSkin}
         onSuccess={(username) => {
@@ -98,10 +99,10 @@ export function App() {
         t={t}
         username={user}
         serverOk={serverOk}
-        locale={locale}
+        localePref={localePref}
         schemePref={schemePref}
         skin={skin}
-        onLocale={setLocale}
+        onLocale={setLocalePref}
         onScheme={setSchemePref}
         onSkin={setSkin}
         onLogout={() => void onLogout()}
