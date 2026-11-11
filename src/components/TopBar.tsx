@@ -1,15 +1,15 @@
 import { StatusDot } from './StatusDot';
 import { AppearanceControls } from './AppearanceControls';
-import type { LocaleCode, SchemePref, Skin } from '../hooks/useTheme';
+import type { LocalePref, SchemePref, Skin } from '../hooks/useTheme';
 
 type Props = {
   t: (key: string) => string;
   username: string;
   serverOk: boolean;
-  locale: LocaleCode;
+  localePref: LocalePref;
   schemePref: SchemePref;
   skin: Skin;
-  onLocale: (v: LocaleCode) => void;
+  onLocale: (v: LocalePref) => void;
   onScheme: (v: SchemePref) => void;
   onSkin: (v: Skin) => void;
   onLogout: () => void;
@@ -19,7 +19,7 @@ export function TopBar({
   t,
   username,
   serverOk,
-  locale,
+  localePref,
   schemePref,
   skin,
   onLocale,
@@ -39,7 +39,7 @@ export function TopBar({
       <div className="top-bar__chrome" aria-label="Locale and theme">
         <AppearanceControls
           t={t}
-          locale={locale}
+          localePref={localePref}
           schemePref={schemePref}
           skin={skin}
           onLocale={onLocale}

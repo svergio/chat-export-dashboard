@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type { LocaleCode, SchemePref, Skin } from '../hooks/useTheme';
+import type { LocalePref, SchemePref, Skin } from '../hooks/useTheme';
 import {
   DASH_SKIN_OPTIONS,
   SCHEME_OPTIONS,
@@ -9,12 +9,18 @@ import {
 } from './SkinIcons';
 import { SelectMenu } from './SelectMenu';
 
+function localeLabel(pref: LocalePref, t: (key: string) => string): string {
+  if (pref === 'ru') return t('localeRu');
+  if (pref === 'en') return t('localeEn');
+  return t('localeAuto');
+}
+
 type Props = {
   t: (key: string) => string;
-  locale: LocaleCode;
+  localePref: LocalePref;
   schemePref: SchemePref;
   skin: Skin;
-  onLocale: (v: LocaleCode) => void;
+  onLocale: (v: LocalePref) => void;
   onScheme: (v: SchemePref) => void;
   onSkin: (v: Skin) => void;
   compact?: boolean;
@@ -44,11 +50,11 @@ function schemeIcon(scheme: SchemePref) {
   return <IconAuto size={15} />;
 }
 
-const LOCALE_OPTIONS: LocaleCode[] = ['en', 'ru'];
+const LOCALE_OPTIONS: LocalePref[] = ['auto', 'en', 'ru'];
 
 export function AppearanceControls({
   t,
-  locale,
+  localePref,
   schemePref,
   skin,
   onLocale,
@@ -73,13 +79,13 @@ export function AppearanceControls({
     <div className={`appearance-controls${compact ? ' appearance-controls--compact' : ''}`}>
       <SelectMenu
         compact={compact}
-        ariaLabel={t('localeEn')}
+        ariaLabel={localeLabel(localePref, t)}
         open={localeOpen}
         setOpen={(v) => (v ? closeExcept('locale') : setLocaleOpen(false))}
-        valueLabel={locale === 'ru' ? t('localeRu') : t('localeEn')}
+        valueLabel={localeLabel(localePref, t)}
       >
         {LOCALE_OPTIONS.map((id) => {
-          const active = locale === id;
+          const active = localePref === id;
           return (
             <button
               key={id}
@@ -92,7 +98,7 @@ export function AppearanceControls({
                 setLocaleOpen(false);
               }}
             >
-              <span>{id === 'ru' ? t('localeRu') : t('localeEn')}</span>
+              <span>{localeLabel(id, t)}</span>
             </button>
           );
         })}

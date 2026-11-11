@@ -87,6 +87,10 @@ Tips are voluntary.
 
 `main` stays free of `test/` suites per project policy; use branch `test` when adding CI.
 
+## Contributing
+
+Dashboard skins and locales: [CONTRIBUTING.md](https://github.com/svergio/chat-export-extension/blob/main/CONTRIBUTING.md) (i18n and optional provider skins).
+
 ## License
 
 See [LICENSE](LICENSE).
