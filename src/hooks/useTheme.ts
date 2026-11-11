@@ -7,7 +7,16 @@ import {
 } from '../i18n/resolveLocale';
 
 export type { LocaleCode, LocalePref };
-export type Skin = 'default' | 'chatgpt' | 'grok' | 'grok-x' | 'copilot' | 'claude';
+export type Skin =
+  | 'default'
+  | 'chatgpt'
+  | 'grok'
+  | 'grok-x'
+  | 'copilot'
+  | 'claude'
+  | 'qwen'
+  | 'deepseek'
+  | 'perplexity';
 export type SchemePref = 'dark' | 'light' | 'auto';
 
 function resolveScheme(schemePref: SchemePref): 'dark' | 'light' {
