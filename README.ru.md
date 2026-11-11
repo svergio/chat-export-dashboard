@@ -2,6 +2,10 @@
 
 # chat-export-dashboard
 
+<p align="center">
+  <img src="docs/media/demo-dashboard.gif" alt="Вход, обзор, браузеры (два профиля), очереди" width="720" />
+</p>
+
 **Дашборд оператора** для [chat-export-server](https://github.com/svergio/chat-export-server). Браузеры, очереди задач, кеш чатов, логи и MCP-токены — статический React на `http://127.0.0.1:8765/dashboard/`, когда сервер подключает этот репозиторий как submodule `dashboard/`.
 
 Работает с [расширением Chat Export](https://github.com/svergio/chat-export-extension); облачный аккаунт не нужен.

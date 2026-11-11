@@ -2,6 +2,10 @@
 
 # chat-export-dashboard
 
+<p align="center">
+  <img src="docs/media/demo-dashboard.gif" alt="Sign-in, overview, browsers (two profiles), queues" width="720" />
+</p>
+
 **Operator dashboard** for [chat-export-server](https://github.com/svergio/chat-export-server). Monitor browsers, job queues, chat cache, logs, and MCP tokens — served as static React at `http://127.0.0.1:8765/dashboard/` when the server embeds this repo as the `dashboard/` submodule.
 
 Works with the [Chat Export extension](https://github.com/svergio/chat-export-extension) bridge; no cloud account required.
