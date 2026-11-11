@@ -49,6 +49,10 @@ npm run build
 
 Produces `public/index.html`, `public/assets/*`, `public/locales/`, `public/styles.css`, `public/skins.css`.
 
+## Docker (optional split front)
+
+[`Dockerfile`](Dockerfile) builds static assets with Node 22, then serves them from **nginx** and reverse-proxies `/dashboard/api`, `/mcp`, `/ws`, `/ext`, `/enroll`, and `/health` to `SERVER_UPSTREAM` (default `server:8765`). Use with Colima (`docker --context colima …`) and the maintainer `docker-compose.yml` that pairs this image with `chat-export-server` — not Docker Desktop.
+
 ## Develop
 
 ```bash
