@@ -1,0 +1,307 @@
+.queue-pipeline {
+  margin-bottom: 1rem;
+}
+
+.queue-pipeline__bar {
+  display: flex;
+  height: 12px;
+  border-radius: var(--ce-radius-sm, 8px);
+  overflow: hidden;
+  background: color-mix(in srgb, var(--ce-fg, #ccc) 12%, transparent);
+  margin: 0.5rem 0 0.75rem;
+}
+
+.queue-pipeline__seg {
+  min-width: 2px;
+  transition: width 0.2s ease;
+}
+
+.queue-pipeline__legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  font-size: 0.85rem;
+}
+
+.queue-pipeline__legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.queue-pipeline__swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.queue-workers {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.queue-worker-card {
+  padding: 0.65rem 0.75rem;
+  border: 1px solid color-mix(in srgb, var(--ce-fg, #ccc) 18%, transparent);
+  border-radius: var(--ce-radius-sm, 10px);
+  font-size: 0.9rem;
+}
+
+.queue-worker-card h4 {
+  margin: 0 0 0.35rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.progress-cell {
+  min-width: 8rem;
+}
+
+.progress-bar {
+  height: 6px;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--ce-fg, #ccc) 15%, transparent);
+  margin-top: 0.25rem;
+  overflow: hidden;
+}
+
+.progress-bar__fill {
+  height: 100%;
+  background: var(--ce-accent, #10a37f);
+  border-radius: 4px;
+}
+
+.progress-current {
+  display: inline-block;
+  margin-top: 0.2rem;
+  font-size: 0.75rem;
+  opacity: 0.85;
+}
+
+.logs-toolbar {
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.logs-live-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 0.35rem;
+  vertical-align: middle;
+}
+
+.logs-live-dot--on {
+  background: #3fb950;
+  box-shadow: 0 0 0 2px color-mix(in srgb, #3fb950 35%, transparent);
+}
+
+.logs-live-dot--off {
+  background: color-mix(in srgb, var(--ce-fg, #ccc) 40%, transparent);
+}
+
+.logs-interval-group {
+  display: inline-flex;
+  gap: 0;
+  border: 1px solid color-mix(in srgb, var(--ce-fg, #ccc) 22%, transparent);
+  border-radius: var(--ce-radius-sm, 8px);
+  overflow: hidden;
+}
+
+.logs-interval-group .btn {
+  border-radius: 0;
+  border: none;
+  border-right: 1px solid color-mix(in srgb, var(--ce-fg, #ccc) 18%, transparent);
+}
+
+.logs-interval-group .btn:last-child {
+  border-right: none;
+}
+
+.logs-interval-group .btn.active {
+  background: color-mix(in srgb, var(--ce-accent, #10a37f) 22%, transparent);
+}
+
+.logs-search {
+  min-width: 12rem;
+  flex: 1;
+  max-width: 22rem;
+}
+
+.log-panel {
+  user-select: text;
+  -webkit-user-select: text;
+  max-height: min(70vh, 640px);
+  overflow: auto;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.8rem;
+  line-height: 1.45;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid color-mix(in srgb, var(--ce-fg, #ccc) 18%, transparent);
+  border-radius: var(--ce-radius-sm, 10px);
+  background: color-mix(in srgb, var(--ce-bg, #111) 92%, var(--ce-fg, #fff) 8%);
+}
+
+.log-line {
+  padding: 0.15rem 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--ce-fg, #ccc) 6%, transparent);
+}
+
+.log-line:last-child {
+  border-bottom: none;
+}
+
+.log-line--warn {
+  background: color-mix(in srgb, #d29922 8%, transparent);
+}
+
+.log-line--error,
+.log-line--alert {
+  background: color-mix(in srgb, #f85149 10%, transparent);
+}
+
+.log-ts {
+  opacity: 0.65;
+  margin-right: 0.5rem;
+}
+
+.log-badge {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  padding: 0.05rem 0.35rem;
+  border-radius: 4px;
+  margin-right: 0.4rem;
+}
+
+.log-badge--info {
+  background: color-mix(in srgb, #58a6ff 25%, transparent);
+  color: var(--ce-fg, #eee);
+}
+
+.log-badge--warn {
+  background: color-mix(in srgb, #d29922 35%, transparent);
+}
+
+.log-badge--error,
+.log-badge--alert {
+  background: color-mix(in srgb, #f85149 35%, transparent);
+}
+
+.log-badge--debug {
+  opacity: 0.7;
+}
+
+.log-detail-toggle {
+  margin-left: 0.35rem;
+  font-size: 0.75rem;
+  cursor: pointer;
+  opacity: 0.75;
+}
+
+.log-detail-pre {
+  margin: 0.35rem 0 0.5rem 1.5rem;
+  padding: 0.5rem;
+  font-size: 0.75rem;
+  overflow-x: auto;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--ce-fg, #ccc) 8%, transparent);
+}
+
+.overview-charts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.resource-meter {
+  margin: 0.35rem 0 0.65rem;
+}
+
+.resource-meter__label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  margin-bottom: 0.2rem;
+}
+
+.resource-meter__track {
+  height: 8px;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--ce-fg, #ccc) 12%, transparent);
+  overflow: hidden;
+}
+
+.resource-meter__fill {
+  height: 100%;
+  background: var(--ce-accent, #10a37f);
+  border-radius: 4px;
+}
+
+.hbar-chart {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.hbar-row {
+  display: grid;
+  grid-template-columns: minmax(6rem, 28%) 1fr auto;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+}
+
+.hbar-row__tool {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.hbar-row__track {
+  height: 10px;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--ce-fg, #ccc) 10%, transparent);
+  overflow: hidden;
+}
+
+.hbar-row__fill {
+  height: 100%;
+  background: color-mix(in srgb, var(--ce-accent, #10a37f) 75%, #58a6ff);
+  border-radius: 4px;
+}
+
+.hbar-row__meta {
+  font-size: 0.75rem;
+  opacity: 0.85;
+  white-space: nowrap;
+}
+
+.queue-donut {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: stretch;
+}
+
+.queue-donut__seg {
+  flex: 1 1 auto;
+  min-width: 4.5rem;
+  text-align: center;
+  padding: 0.5rem 0.4rem;
+  border-radius: var(--ce-radius-sm, 8px);
+  font-size: 0.85rem;
+}
+
+.queue-donut__count {
+  display: block;
+  font-size: 1.25rem;
+  font-weight: 600;
+}

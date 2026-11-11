@@ -5,12 +5,22 @@ export type ApiError = {
   message?: string;
 };
 
+export type OverviewResources = {
+  rssMb: number;
+  heapUsedMb: number;
+  heapTotalMb: number;
+  dbSizeBytes: number;
+  walSizeBytes: number;
+  loadAvg: number[];
+  uptimeMs: number;
+};
+
 export type OverviewResponse = {
   ok: boolean;
   uptimeMs: number;
   startedAt: string;
   version: string;
-  database: { path?: string; kind?: string };
+  database: { path?: string; kind?: string; file?: string; driver?: string };
   dashboard: { enabled: boolean };
   mcpToolStats: {
     tool: string;
@@ -24,6 +34,7 @@ export type OverviewResponse = {
     boundBrowserId?: string;
     connections?: number;
   } | null;
+  resources?: OverviewResources;
 };
 
 export type BrowserRow = {
@@ -44,7 +55,7 @@ export type JobRow = {
   status: string;
   platform?: string;
   browserId?: string;
-  progress?: number | null;
+  progress?: number | { done?: number; total?: number; current?: unknown } | null;
   updatedAt?: string;
 };
 
