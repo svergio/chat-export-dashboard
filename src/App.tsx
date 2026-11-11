@@ -64,6 +64,12 @@ export function App() {
       <LoginScreen
         t={t}
         initialError={bootError}
+        locale={locale}
+        schemePref={schemePref}
+        skin={skin}
+        onLocale={setLocale}
+        onScheme={setSchemePref}
+        onSkin={setSkin}
         onSuccess={(username) => {
           setBootError(undefined);
           setUser(username);

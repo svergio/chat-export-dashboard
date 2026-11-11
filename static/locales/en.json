@@ -116,5 +116,10 @@
   "skinClaude": "claude",
   "localeEn": "EN",
   "localeRu": "RU",
-  "dashEmDash": "—"
+  "dashEmDash": "—",
+  "browserSlotsTitle": "Browser slots",
+  "browserSlotsHint": "Up to two Chrome profiles can connect. Install the extension in a second profile, enroll with a ceb_ key, and keep both browsers open.",
+  "browserSlot": "Slot",
+  "browserSlotEmpty": "No browser enrolled in this slot",
+  "browserSlotOfflineHelp": "Open the extension popup in another Chrome profile, connect to the hub, then enroll below."
 }
