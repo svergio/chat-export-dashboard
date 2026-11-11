@@ -3,7 +3,7 @@
   "version": "1.0.1",
   "description": "Web dashboard for chat-export-server (git submodule under server/dashboard).",
   "private": true,
-  "license": "ISC",
+  "license": "MIT",
   "type": "module",
   "repository": {
     "type": "git",
