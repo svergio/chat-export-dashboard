@@ -1,14 +1,31 @@
 {
   "name": "chat-export-dashboard",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Web dashboard for chat-export-server (git submodule under server/dashboard).",
   "private": true,
   "license": "ISC",
+  "type": "module",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/svergio/chat-export-dashboard.git"
   },
   "engines": {
     "node": ">=20"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-react": "^4.3.4",
+    "typescript": "~5.7.2",
+    "vite": "^6.0.3"
   }
 }
