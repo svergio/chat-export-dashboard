@@ -40,6 +40,41 @@ flowchart LR
 
 Wiki: [Dashboard and security](https://github.com/svergio/chat-export-extension/wiki).
 
+## Configuration
+
+The dashboard is **static files** served by [chat-export-server](https://github.com/svergio/chat-export-server) at **`http://127.0.0.1:8765/dashboard/`** (port from server `config.json`, default `8765`).
+
+### Login
+
+| Item | Default / note |
+|------|----------------|
+| URL | `http://127.0.0.1:8765/dashboard/` |
+| Username | `admin` (`dashboard.username` in server `~/.chat-export/config.json`) |
+| Password | `changeme` until you set `dashboard.password` |
+| Session | HttpOnly cookie `ce_dash_sid` (not your `cem_` MCP Bearer) |
+
+Sign in with the dashboard password from server config. MCP keys from `chat-export-server key new` are for Cursor/API only.
+
+### Operator tasks from the UI
+
+| Page | Config / ops |
+|------|----------------|
+| **Browsers** | Enroll **`ceb_`** tokens for up to two Chrome profiles; copy bind hints for MCP |
+| **Settings** | Rotate MCP token (`cem_`), language EN/RU, provider skins |
+| **Queues** | Inspect `jobs_*` pipeline per browser |
+| **Cache** | View local `chat_cache_*` entries on disk |
+| **Logs** | Tail `~/.chat-export/server.log` |
+
+### Build and embed
+
+```bash
+npm ci && npm run build
+```
+
+Copy `public/` into `chat-export-server/dashboard/public/` (or use the server repo submodule). Restart the server after rebuild.
+
+Extension popup must use a enrolled **`ceb_`** token; server must be running on the same host/port. See [extension Configuration](https://github.com/svergio/chat-export-extension#configuration) and [server Configuration](https://github.com/svergio/chat-export-server#configuration).
+
 ## Build
 
 ```bash
@@ -79,7 +114,6 @@ React 19, TypeScript, Vite. Five provider skins (ChatGPT, Grok, Grok-X, Claude, 
 ## Support the project
 
 - **Tip (fiat):** [DonationAlerts — svwergio_mel](https://www.donationalerts.com/r/svwergio_mel)
-- **Crypto (optional):** follow maintainer-published addresses in server README Support section; verify network before transfer.
 
 Tips are voluntary.
 

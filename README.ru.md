@@ -38,6 +38,35 @@ flowchart LR
 2. Здесь: `npm ci && npm run build` → `public/`.
 3. `chat-export-server start`, откройте `http://127.0.0.1:8765/dashboard/`, войдите паролем дашборда.
 
+## Настройка
+
+Дашборд — статика на **`http://127.0.0.1:8765/dashboard/`**, которую отдаёт [chat-export-server](https://github.com/svergio/chat-export-server).
+
+### Вход
+
+| Параметр | Значение |
+|----------|----------|
+| URL | `http://127.0.0.1:8765/dashboard/` |
+| Логин | `admin` (`dashboard.username` в `~/.chat-export/config.json`) |
+| Пароль | `changeme`, пока не задали `dashboard.password` |
+| Сессия | cookie `ce_dash_sid` (это не Bearer `cem_` для MCP) |
+
+Входите паролем дашборда. Ключи MCP (`cem_` / `cek_`) — только для Cursor и HTTP API.
+
+### Разделы
+
+| Страница | Назначение |
+|----------|------------|
+| **Браузеры** | Выпуск `ceb_` для двух профилей Chrome |
+| **Настройки** | Смена MCP-токена, язык, скины |
+| **Очереди** | Статусы `jobs_*` |
+| **Кеш** | Локальный `chat_cache_*` |
+| **Логи** | `~/.chat-export/server.log` |
+
+После `npm run build` скопируйте `public/` в `chat-export-server/dashboard/public/` или обновите submodule.
+
+Связка с расширением: [настройка extension](https://github.com/svergio/chat-export-extension#%D0%BD%D0%B0%D1%81%D1%82%D1%80%D0%BE%D0%B9%D0%BA%D0%B0), [настройка server](https://github.com/svergio/chat-export-server#%D0%BD%D0%B0%D1%81%D1%82%D1%80%D0%BE%D0%B9%D0%BA%D0%B0).
+
 ## Сборка и разработка
 
 ```bash
@@ -65,7 +94,6 @@ React 19, TypeScript, Vite; пять скинов провайдеров.
 ## Поддержка проекта
 
 - [DonationAlerts — svwergio_mel](https://www.donationalerts.com/r/svwergio_mel)
-- Крипто — только по опубликованным адресам в README сервера, с проверкой сети.
 
 ## Лицензия
 
