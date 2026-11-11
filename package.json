@@ -1,0 +1,14 @@
+{
+  "name": "chat-export-dashboard",
+  "version": "0.0.1",
+  "description": "Web dashboard for chat-export-server (git submodule under server/dashboard).",
+  "private": true,
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/svergio/chat-export-dashboard.git"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
