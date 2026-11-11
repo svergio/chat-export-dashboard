@@ -1,0 +1,109 @@
+import { useCallback, useEffect, useState } from 'react';
+import { api, ApiClientError } from './api/client';
+import type { Section } from './types/api';
+import { useTheme } from './hooks/useTheme';
+import { useLocale } from './hooks/useLocale';
+import { LoginScreen } from './components/LoginScreen';
+import { TopBar } from './components/TopBar';
+import { Sidebar } from './components/Sidebar';
+import { OverviewPage } from './pages/OverviewPage';
+import { BrowsersPage } from './pages/BrowsersPage';
+import { QueuesPage } from './pages/QueuesPage';
+import { CachePage } from './pages/CachePage';
+import { LogsPage } from './pages/LogsPage';
+
+export function App() {
+  const { skin, schemePref, locale, setSkin, setSchemePref, setLocale } = useTheme();
+  const { t } = useLocale(locale);
+  const [user, setUser] = useState<string | null>(null);
+  const [section, setSection] = useState<Section>('overview');
+  const [serverOk, setServerOk] = useState(false);
+  const [bootError, setBootError] = useState<string | undefined>();
+
+  const onUnauthorized = useCallback(() => {
+    setUser(null);
+    setServerOk(false);
+  }, []);
+
+  const onLogout = useCallback(async () => {
+    try {
+      await api('POST', '/logout');
+    } catch {
+      /* ignore */
+    }
+    setUser(null);
+    setServerOk(false);
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        await api('GET', '/overview');
+        if (!cancelled) {
+          setUser('admin');
+          setServerOk(true);
+        }
+      } catch (err) {
+        if (cancelled) return;
+        if (err instanceof ApiClientError && err.status === 401) {
+          setUser(null);
+        } else {
+          setUser(null);
+          setBootError(err instanceof Error ? err.message : String(err));
+        }
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  if (!user) {
+    return (
+      <LoginScreen
+        t={t}
+        initialError={bootError}
+        onSuccess={(username) => {
+          setBootError(undefined);
+          setUser(username);
+          setSection('overview');
+        }}
+      />
+    );
+  }
+
+  let panel = null;
+  if (section === 'overview') {
+    panel = <OverviewPage t={t} onUnauthorized={onUnauthorized} onServerOk={setServerOk} />;
+  } else if (section === 'browsers') {
+    panel = <BrowsersPage t={t} onUnauthorized={onUnauthorized} />;
+  } else if (section === 'queues') {
+    panel = <QueuesPage t={t} onUnauthorized={onUnauthorized} />;
+  } else if (section === 'cache') {
+    panel = <CachePage t={t} onUnauthorized={onUnauthorized} />;
+  } else if (section === 'logs') {
+    panel = <LogsPage t={t} onUnauthorized={onUnauthorized} />;
+  }
+
+  return (
+    <div className="app-shell">
+      <TopBar
+        t={t}
+        username={user}
+        serverOk={serverOk}
+        locale={locale}
+        schemePref={schemePref}
+        skin={skin}
+        onLocale={setLocale}
+        onScheme={setSchemePref}
+        onSkin={setSkin}
+        onLogout={() => void onLogout()}
+      />
+      <div className="layout">
+        <Sidebar t={t} section={section} onNavigate={setSection} />
+        <main className="main">{panel}</main>
+      </div>
+    </div>
+  );
+}
