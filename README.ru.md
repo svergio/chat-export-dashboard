@@ -47,6 +47,10 @@ npm run dev   # proxy /dashboard/api на сервер
 
 React 19, TypeScript, Vite; пять скинов провайдеров.
 
+## Docker (опциональный фронт)
+
+[`Dockerfile`](Dockerfile): сборка в Node 22, раздача статики через **nginx**, прокси `/dashboard/api`, `/mcp`, `/ws`, `/ext`, `/enroll`, `/health` на `SERVER_UPSTREAM` (по умолчанию `server:8765`). Запуск через Colima (`docker --context colima …`) вместе с `chat-export-server` в `docker-compose.yml` дерева Chat Export.
+
 ## Безопасность
 
 - Доступен там, где слушает сервер — держите **loopback**, если не настроили TLS и усиленную аутентификацию.
