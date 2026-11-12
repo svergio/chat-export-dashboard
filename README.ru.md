@@ -31,14 +31,11 @@ MCP и CLI неудобны, когда задача зависла, брауз�
 
 Сессия: cookie `ce_dash_sid`; API: `/dashboard/api`.
 
-```mermaid
-flowchart LR
-  USER[Браузер оператора]
-  USER --> DASH[/dashboard/]
-  DASH --> API[/dashboard/api/]
-  API --> SRV[chat-export-server]
-  SRV --> EXT[Расширение]
-```
+## Архитектура
+
+Дашборд — **статическая сборка React** (`public/`), встроенная в [chat-export-server](https://github.com/svergio/chat-export-server) по пути `/dashboard/`. Браузер оператора грузит UI с того же origin, что и сервер; авторизованные запросы идут на `/dashboard/api` и читают состояние hub, очередей, кеша и логов из основного процесса, далее — **WebSocket-мост** расширения Chrome. Отдельного облачного бэкенда нет.
+
+Сборка: `npm ci && npm run build`, синхронизация в submodule `dashboard/`, затем `chat-export-server start`. Опциональный **образ nginx** проксирует API, MCP и WebSocket на `SERVER_UPSTREAM` (удобно с Colima). Диаграммы: **[Вики — Архитектура](https://github.com/svergio/chat-export-extension/wiki/Architecture-RU)** (раздел дашборда). Безопасность: [Дашборд и безопасность](https://github.com/svergio/chat-export-extension/wiki/Dashboard-and-Security-RU) · [Деплой](https://github.com/svergio/chat-export-extension/wiki/Native-and-Kubernetes-Deployment-RU).
 
 ## Быстрый старт (3 шага)
 

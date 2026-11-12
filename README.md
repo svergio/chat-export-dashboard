@@ -31,14 +31,11 @@ MCP and CLI are powerful but opaque when jobs stall, a browser drops offline, or
 
 Session auth uses cookie `ce_dash_sid`; APIs under `/dashboard/api` on the server host.
 
-```mermaid
-flowchart LR
-  USER[Operator browser]
-  USER --> DASH[/dashboard UI/]
-  DASH --> API[/dashboard/api/]
-  API --> SRV[chat-export-server core]
-  SRV --> EXT[Extension WS]
-```
+## Architecture
+
+The dashboard is a **static React** build (`public/`) embedded in [chat-export-server](https://github.com/svergio/chat-export-server) at `/dashboard/`. Your operator browser loads UI assets from the same origin as the server; authenticated calls hit `/dashboard/api`, which reads browser hub state, job queues, cache, and logs from the core process and ultimately drives the Chrome **extension WebSocket** bridge — no separate cloud backend.
+
+Build with `npm ci && npm run build`, sync into the server’s `dashboard/` submodule, then `chat-export-server start`. Optional **nginx split image** proxies API, MCP, and WebSocket to `SERVER_UPSTREAM` (Colima-friendly). Diagrams: **[Wiki — Architecture](https://github.com/svergio/chat-export-extension/wiki/Architecture)** (dashboard section). Security and auth: [Dashboard and security](https://github.com/svergio/chat-export-extension/wiki/Dashboard-and-Security) · [Native / K8s deploy](https://github.com/svergio/chat-export-extension/wiki/Native-and-Kubernetes-Deployment).
 
 ## Quick start (3 steps)
 
