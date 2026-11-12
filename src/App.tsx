@@ -3,6 +3,7 @@ import { api, ApiClientError } from './api/client';
 import type { Section } from './types/api';
 import { useTheme } from './hooks/useTheme';
 import { useLocale } from './hooks/useLocale';
+import { DashboardRefreshProvider } from './hooks/useDashboardRefresh';
 import { LoginScreen } from './components/LoginScreen';
 import { TopBar } from './components/TopBar';
 import { Sidebar } from './components/Sidebar';
@@ -85,34 +86,36 @@ export function App() {
   if (section === 'overview') {
     panel = <OverviewPage t={t} onUnauthorized={onUnauthorized} onServerOk={setServerOk} />;
   } else if (section === 'browsers') {
-    panel = <BrowsersPage t={t} onUnauthorized={onUnauthorized} />;
+    panel = <BrowsersPage t={t} onUnauthorized={onUnauthorized} onServerOk={setServerOk} />;
   } else if (section === 'queues') {
-    panel = <QueuesPage t={t} onUnauthorized={onUnauthorized} />;
+    panel = <QueuesPage t={t} onUnauthorized={onUnauthorized} onServerOk={setServerOk} />;
   } else if (section === 'cache') {
-    panel = <CachePage t={t} onUnauthorized={onUnauthorized} />;
+    panel = <CachePage t={t} onUnauthorized={onUnauthorized} onServerOk={setServerOk} />;
   } else if (section === 'logs') {
-    panel = <LogsPage t={t} onUnauthorized={onUnauthorized} />;
+    panel = <LogsPage t={t} onUnauthorized={onUnauthorized} onServerOk={setServerOk} />;
   }
 
   return (
-    <div className="app-shell">
-      <TopBar
-        t={t}
-        username={user}
-        serverOk={serverOk}
-        localePref={localePref}
-        schemePref={schemePref}
-        skin={skin}
-        onLocale={setLocalePref}
-        onScheme={setSchemePref}
-        onSkin={setSkin}
-        onLogout={() => void onLogout()}
-      />
-      <div className="layout">
-        <Sidebar t={t} section={section} onNavigate={setSection} />
-        <main className="main">{panel}</main>
+    <DashboardRefreshProvider>
+      <div className="app-shell">
+        <TopBar
+          t={t}
+          username={user}
+          serverOk={serverOk}
+          localePref={localePref}
+          schemePref={schemePref}
+          skin={skin}
+          onLocale={setLocalePref}
+          onScheme={setSchemePref}
+          onSkin={setSkin}
+          onLogout={() => void onLogout()}
+        />
+        <div className="layout">
+          <Sidebar t={t} section={section} onNavigate={setSection} />
+          <main className="main">{panel}</main>
+        </div>
+        <LegalFooter t={t} />
       </div>
-      <LegalFooter t={t} />
-    </div>
+    </DashboardRefreshProvider>
   );
 }

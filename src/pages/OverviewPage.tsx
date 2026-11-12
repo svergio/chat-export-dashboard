@@ -2,6 +2,8 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { api, ApiClientError } from '../api/client';
 import type { OverviewResponse } from '../types/api';
 import { formatDate, formatUptime } from '../utils/format';
+import { jobStatusLabel } from '../utils/jobStatus';
+import { useDashboardRefresh } from '../hooks/useDashboardRefresh';
 
 type Props = {
   t: (key: string) => string;
@@ -27,6 +29,7 @@ function formatBytes(n: number, t: (key: string) => string): string {
 }
 
 export function OverviewPage({ t, onUnauthorized, onServerOk }: Props) {
+  const { tick, markRefreshed } = useDashboardRefresh();
   const [data, setData] = useState<OverviewResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -38,6 +41,7 @@ export function OverviewPage({ t, onUnauthorized, onServerOk }: Props) {
       const res = await api<OverviewResponse>('GET', '/overview');
       setData(res);
       onServerOk(true);
+      markRefreshed();
     } catch (err) {
       if (err instanceof ApiClientError && err.status === 401) {
         onUnauthorized();
@@ -48,11 +52,11 @@ export function OverviewPage({ t, onUnauthorized, onServerOk }: Props) {
     } finally {
       setLoading(false);
     }
-  }, [onUnauthorized, onServerOk]);
+  }, [onUnauthorized, onServerOk, markRefreshed]);
 
   useEffect(() => {
     void load();
-  }, [load]);
+  }, [load, tick]);
 
   const toolMaxCalls = useMemo(() => {
     if (!data?.mcpToolStats?.length) return 1;
@@ -76,9 +80,16 @@ export function OverviewPage({ t, onUnauthorized, onServerOk }: Props) {
     );
   }
 
-  if (error) {
+  if (error && !data) {
     return (
       <section className="panel panel--active">
+        <div className="toolbar">
+          <h2>{t('navOverview')}</h2>
+          <span className="top-bar__spacer" />
+          <button type="button" className="btn btn--sm" onClick={() => void load()}>
+            {t('refreshNow')}
+          </button>
+        </div>
         <div className="msg msg--error">{error}</div>
       </section>
     );
@@ -106,11 +117,8 @@ export function OverviewPage({ t, onUnauthorized, onServerOk }: Props) {
     <section className="panel panel--active">
       <div className="toolbar">
         <h2>{t('navOverview')}</h2>
-        <span className="top-bar__spacer" />
-        <button type="button" className="btn btn--sm" onClick={() => void load()}>
-          {t('refresh')}
-        </button>
       </div>
+      {error ? <div className="msg msg--error">{error}</div> : null}
 
       {res ? (
         <div className="overview-charts">
@@ -145,18 +153,20 @@ export function OverviewPage({ t, onUnauthorized, onServerOk }: Props) {
                 <div className="resource-meter__fill" style={{ width: `${dbPct}%` }} />
               </div>
             </div>
-            <div className="stat-row">
-              <dt>{t('overviewWal')}</dt>
-              <dd>{formatBytes(res.walSizeBytes, t)}</dd>
-            </div>
-            <div className="stat-row">
-              <dt>{t('overviewLoadAvg')}</dt>
-              <dd className="mono">{res.loadAvg?.join(' · ') ?? t('dashEmDash')}</dd>
-            </div>
-            <div className="stat-row">
-              <dt>{t('uptime')}</dt>
-              <dd>{formatUptime(res.uptimeMs ?? data.uptimeMs ?? 0)}</dd>
-            </div>
+            <dl>
+              <div className="stat-row">
+                <dt>{t('overviewWal')}</dt>
+                <dd>{formatBytes(res.walSizeBytes, t)}</dd>
+              </div>
+              <div className="stat-row">
+                <dt>{t('overviewLoadAvg')}</dt>
+                <dd>{(res.loadAvg || []).join(' · ') || t('dashEmDash')}</dd>
+              </div>
+              <div className="stat-row">
+                <dt>{t('uptime')}</dt>
+                <dd>{formatUptime(res.uptimeMs || data.uptimeMs || 0)}</dd>
+              </div>
+            </dl>
           </div>
 
           <div className="card">
@@ -172,7 +182,7 @@ export function OverviewPage({ t, onUnauthorized, onServerOk }: Props) {
                     }}
                   >
                     <span className="queue-donut__count">{v}</span>
-                    {k}
+                    {jobStatusLabel(k, t)}
                   </div>
                 ))}
               </div>

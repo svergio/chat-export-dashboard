@@ -1,11 +1,3 @@
-function escapeHtml(s: string): string {
-  return String(s)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
-}
-
 function dotTone(status: string): string | null {
   const s = String(status || '').toLowerCase();
   if (s === 'online') return 'ok';
@@ -16,7 +8,7 @@ function dotTone(status: string): string | null {
   return null;
 }
 
-export function StatusBadge({ status }: { status: string }) {
+export function StatusBadge({ status, label }: { status: string; label?: string }) {
   const s = String(status || '').toLowerCase();
   let extra = '';
   if (s === 'online') extra = ' badge--online';
@@ -28,7 +20,7 @@ export function StatusBadge({ status }: { status: string }) {
   return (
     <span className={`badge badge--with-dot${extra}`}>
       {tone ? <span className={`status-dot status-dot--${tone}`} aria-hidden="true" /> : null}
-      {escapeHtml(status)}
+      {label || status}
     </span>
   );
 }

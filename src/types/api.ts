@@ -74,6 +74,15 @@ export type CacheRow = {
   updatedAt?: string;
 };
 
+export type CacheSummary = {
+  totalCaches: number;
+  totalBlocks: number;
+  totalTurns: number;
+  totalChars: number;
+  byPlatform: { platform: string; caches: number; turns: number; chars: number }[];
+  db?: { path?: string | null; dbSizeBytes: number; walSizeBytes: number };
+};
+
 export type CacheDetail = {
   cacheId: string;
   chatId: string;

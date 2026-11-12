@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { api, ApiClientError } from '../api/client';
+import { useDashboardRefresh } from '../hooks/useDashboardRefresh';
 
 type LogType = 'server' | 'alerts';
 
@@ -8,15 +9,8 @@ type LogRecord = Record<string, unknown>;
 type Props = {
   t: (key: string) => string;
   onUnauthorized: () => void;
+  onServerOk: (ok: boolean) => void;
 };
-
-const INTERVALS = [
-  { ms: 0, key: 'logsIntervalOff' },
-  { ms: 1000, key: '1s' },
-  { ms: 3000, key: '3s' },
-  { ms: 5000, key: '5s' },
-  { ms: 10000, key: '10s' }
-] as const;
 
 const LEVELS = ['ALL', 'INFO', 'WARN', 'ERROR', 'ALERT', 'DEBUG'] as const;
 
@@ -101,12 +95,12 @@ function LogLine({ entry }: { entry: LogRecord }) {
   );
 }
 
-export function LogsPage({ t, onUnauthorized }: Props) {
+export function LogsPage({ t, onUnauthorized, onServerOk }: Props) {
+  const { tick, markRefreshed, intervalMs } = useDashboardRefresh();
   const [logType, setLogType] = useState<LogType>('server');
   const [entries, setEntries] = useState<LogRecord[]>([]);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [live, setLive] = useState(true);
-  const [intervalMs, setIntervalMs] = useState(3000);
   const [levelFilter, setLevelFilter] = useState<(typeof LEVELS)[number]>('ALL');
   const [search, setSearch] = useState('');
   const panelRef = useRef<HTMLDivElement>(null);
@@ -133,24 +127,31 @@ export function LogsPage({ t, onUnauthorized }: Props) {
       });
       setEntries(rows);
       setLoadError(null);
+      onServerOk(true);
+      markRefreshed();
     } catch (err) {
       if (err instanceof ApiClientError && err.status === 401) {
         onUnauthorized();
         return;
       }
+      onServerOk(false);
       setLoadError(err instanceof Error ? err.message : String(err));
     }
-  }, [logType, onUnauthorized]);
+  }, [logType, onUnauthorized, onServerOk, markRefreshed]);
 
   useEffect(() => {
     void load();
   }, [load]);
 
   useEffect(() => {
-    if (!live || intervalMs <= 0) return;
-    const id = setInterval(() => void load(), intervalMs);
-    return () => clearInterval(id);
-  }, [live, intervalMs, load]);
+    if (!live) return;
+    void load();
+  }, [tick, live, load]);
+
+  useEffect(() => {
+    if (intervalMs <= 0) setLive(false);
+    else setLive(true);
+  }, [intervalMs]);
 
   useEffect(() => {
     const onSelectionChange = () => {
@@ -228,22 +229,6 @@ export function LogsPage({ t, onUnauthorized }: Props) {
           <span className={`logs-live-dot ${live ? 'logs-live-dot--on' : 'logs-live-dot--off'}`} />
           {live ? t('logsLive') : t('logsPaused')}
         </button>
-        <div className="logs-interval-group">
-          {INTERVALS.map((opt) => (
-            <button
-              key={opt.ms}
-              type="button"
-              className={`btn btn--sm${intervalMs === opt.ms ? ' active' : ''}`}
-              onClick={() => {
-                setIntervalMs(opt.ms);
-                if (opt.ms > 0) setLive(true);
-                else setLive(false);
-              }}
-            >
-              {opt.key.startsWith('logs') ? t(opt.key) : opt.key}
-            </button>
-          ))}
-        </div>
         <select
           className="ce-select"
           value={levelFilter}
@@ -265,9 +250,6 @@ export function LogsPage({ t, onUnauthorized }: Props) {
         />
         <button type="button" className="btn btn--sm" onClick={() => void onCopy()}>
           {t('logsCopy')}
-        </button>
-        <button type="button" className="btn btn--sm" onClick={() => void load()}>
-          {t('refresh')}
         </button>
       </div>
       {loadError ? <div className="msg msg--error">{loadError}</div> : null}

@@ -4,6 +4,8 @@ import type { JobRow, OverviewResponse } from '../types/api';
 import { StatusBadge } from '../components/StatusBadge';
 import { formatDate } from '../utils/format';
 import { formatJobProgress } from '../utils/jobProgress';
+import { jobStatusLabel } from '../utils/jobStatus';
+import { useDashboardRefresh } from '../hooks/useDashboardRefresh';
 
 const TERMINAL = new Set(['done', 'error', 'failed', 'cancelled']);
 const PIPELINE_ORDER = ['queued', 'running', 'waiting_host', 'assigned', 'done', 'error', 'cancelled'] as const;
@@ -21,6 +23,7 @@ const STATUS_COLORS: Record<string, string> = {
 type Props = {
   t: (key: string) => string;
   onUnauthorized: () => void;
+  onServerOk: (ok: boolean) => void;
 };
 
 function ProgressCell({
@@ -52,7 +55,8 @@ function ProgressCell({
   );
 }
 
-export function QueuesPage({ t, onUnauthorized }: Props) {
+export function QueuesPage({ t, onUnauthorized, onServerOk }: Props) {
+  const { tick, markRefreshed } = useDashboardRefresh();
   const [jobs, setJobs] = useState<JobRow[]>([]);
   const [queueCounts, setQueueCounts] = useState<Record<string, number>>({});
   const [error, setError] = useState<string | null>(null);
@@ -68,18 +72,21 @@ export function QueuesPage({ t, onUnauthorized }: Props) {
       ]);
       setJobs(jobsRes.jobs || []);
       setQueueCounts(overview.queue || {});
+      onServerOk(true);
+      markRefreshed();
     } catch (err) {
       if (err instanceof ApiClientError && err.status === 401) {
         onUnauthorized();
         return;
       }
+      onServerOk(false);
       setError(err instanceof Error ? err.message : String(err));
     }
-  }, [onUnauthorized]);
+  }, [onUnauthorized, onServerOk, markRefreshed]);
 
   useEffect(() => {
     void load();
-  }, [load]);
+  }, [load, tick]);
 
   const platforms = useMemo(() => {
     const set = new Set<string>();
@@ -128,10 +135,6 @@ export function QueuesPage({ t, onUnauthorized }: Props) {
     <section className="panel panel--active">
       <div className="toolbar">
         <h2>{t('navQueues')}</h2>
-        <span className="top-bar__spacer" />
-        <button type="button" className="btn btn--sm" onClick={() => void load()}>
-          {t('refresh')}
-        </button>
       </div>
       {error ? <div className="msg msg--error">{error}</div> : null}
 
@@ -147,7 +150,7 @@ export function QueuesPage({ t, onUnauthorized }: Props) {
                 key={status}
                 className="queue-pipeline__seg"
                 style={{ width: `${pct}%`, background: STATUS_COLORS[status] || '#8b949e' }}
-                title={`${status}: ${count}`}
+                title={`${jobStatusLabel(status, t)}: ${count}`}
               />
             );
           })}
@@ -159,7 +162,7 @@ export function QueuesPage({ t, onUnauthorized }: Props) {
             return (
               <span key={status} className="queue-pipeline__legend-item">
                 <span className="queue-pipeline__swatch" style={{ background: STATUS_COLORS[status] }} />
-                <StatusBadge status={status} /> {count}
+                <StatusBadge status={status} label={jobStatusLabel(status, t)} /> {count}
               </span>
             );
           })}
@@ -175,7 +178,8 @@ export function QueuesPage({ t, onUnauthorized }: Props) {
               <h4 className="mono">{browserId}</h4>
               {list.map((j) => (
                 <div key={j.job_id} style={{ marginBottom: '0.35rem' }}>
-                  <StatusBadge status={j.status} /> <span className="mono">{j.kind}</span>
+                  <StatusBadge status={j.status} label={jobStatusLabel(j.status, t)} />{' '}
+                  <span className="mono">{j.kind}</span>
                   {j.platform ? ` · ${j.platform}` : null}
                 </div>
               ))}
@@ -196,7 +200,7 @@ export function QueuesPage({ t, onUnauthorized }: Props) {
             <option value="">{t('queueFilterAll')}</option>
             {PIPELINE_ORDER.map((s) => (
               <option key={s} value={s}>
-                {s}
+                {jobStatusLabel(s, t)}
               </option>
             ))}
           </select>
@@ -245,7 +249,7 @@ export function QueuesPage({ t, onUnauthorized }: Props) {
                     <td className="mono">{j.job_id}</td>
                     <td>{j.kind}</td>
                     <td>
-                      <StatusBadge status={j.status} />
+                      <StatusBadge status={j.status} label={jobStatusLabel(j.status, t)} />
                     </td>
                     <td>{j.platform || t('dashEmDash')}</td>
                     <td className="mono">{j.browserId || t('dashEmDash')}</td>

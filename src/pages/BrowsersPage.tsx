@@ -3,10 +3,12 @@ import { api, ApiClientError } from '../api/client';
 import type { BrowserRow, McpTokenInfo, ServerSettingsSummary } from '../types/api';
 import { StatusBadge } from '../components/StatusBadge';
 import { formatDate, mcpSnippet } from '../utils/format';
+import { useDashboardRefresh } from '../hooks/useDashboardRefresh';
 
 type Props = {
   t: (key: string) => string;
   onUnauthorized: () => void;
+  onServerOk: (ok: boolean) => void;
 };
 
 function formatTabCount(n: number, t: (key: string) => string): string {
@@ -15,7 +17,8 @@ function formatTabCount(n: number, t: (key: string) => string): string {
   return `${n} ${t('tabsMany')}`;
 }
 
-export function BrowsersPage({ t, onUnauthorized }: Props) {
+export function BrowsersPage({ t, onUnauthorized, onServerOk }: Props) {
+  const { tick, markRefreshed } = useDashboardRefresh();
   const [mcp, setMcp] = useState<McpTokenInfo | null>(null);
   const [browsers, setBrowsers] = useState<BrowserRow[]>([]);
   const [serverSettings, setServerSettings] = useState<ServerSettingsSummary | null>(null);
@@ -37,20 +40,27 @@ export function BrowsersPage({ t, onUnauthorized }: Props) {
       setServerSettings(data.serverSettings || null);
     } catch (err) {
       if (err instanceof ApiClientError && err.status === 401) onUnauthorized();
+      throw err;
     }
   }, [onUnauthorized]);
 
   const loadAll = useCallback(async () => {
     try {
       await Promise.all([loadMcp(), loadBrowsers()]);
+      onServerOk(true);
+      markRefreshed();
     } catch (err) {
-      if (err instanceof ApiClientError && err.status === 401) onUnauthorized();
+      if (err instanceof ApiClientError && err.status === 401) {
+        onUnauthorized();
+        return;
+      }
+      onServerOk(false);
     }
-  }, [loadMcp, loadBrowsers, onUnauthorized]);
+  }, [loadMcp, loadBrowsers, onUnauthorized, onServerOk, markRefreshed]);
 
   useEffect(() => {
     void loadAll();
-  }, [loadAll]);
+  }, [loadAll, tick]);
 
   const onRotate = async () => {
     if (!confirm(t('rotateMcpConfirm'))) return;
@@ -91,6 +101,28 @@ export function BrowsersPage({ t, onUnauthorized }: Props) {
     try {
       await api('POST', '/browsers/bind', { browserId });
       await loadBrowsers();
+      markRefreshed();
+    } catch (err) {
+      alert(err instanceof Error ? err.message : String(err));
+    }
+  };
+
+  const onUnbind = async () => {
+    try {
+      await api('POST', '/browsers/unbind', {});
+      await loadBrowsers();
+      markRefreshed();
+    } catch (err) {
+      alert(err instanceof Error ? err.message : String(err));
+    }
+  };
+
+  const onRecheck = async (browserId: string) => {
+    try {
+      const data = await api<{ browsers?: BrowserRow[] }>('POST', '/browsers/recheck', { browserId });
+      if (Array.isArray(data.browsers)) setBrowsers(data.browsers);
+      else await loadBrowsers();
+      markRefreshed();
     } catch (err) {
       alert(err instanceof Error ? err.message : String(err));
     }
@@ -106,7 +138,9 @@ export function BrowsersPage({ t, onUnauthorized }: Props) {
 
   return (
     <section className="panel panel--active">
-      <h2>{t('navBrowsers')}</h2>
+      <div className="toolbar">
+        <h2>{t('navBrowsers')}</h2>
+      </div>
       {destructiveMismatch ? (
         <div className="msg msg--warn">{t('destructiveServerOffWarn')}</div>
       ) : null}
@@ -294,9 +328,18 @@ export function BrowsersPage({ t, onUnauthorized }: Props) {
                     <td>{onlineBrowser ? tabs : t('dashEmDash')}</td>
                     <td>{b.bound ? t('yes') : t('dashEmDash')}</td>
                     <td className="mono">{b.fingerprint || t('dashEmDash')}</td>
-                    <td>
-                      <button type="button" className="btn btn--sm" onClick={() => void onBind(b.browserId)}>
-                        {t('btnBind')}
+                    <td className="actions-inline">
+                      {b.bound ? (
+                        <button type="button" className="btn btn--sm" onClick={() => void onUnbind()}>
+                          {t('btnUnbind')}
+                        </button>
+                      ) : (
+                        <button type="button" className="btn btn--sm" onClick={() => void onBind(b.browserId)}>
+                          {t('btnBind')}
+                        </button>
+                      )}
+                      <button type="button" className="btn btn--sm" onClick={() => void onRecheck(b.browserId)}>
+                        {t('btnRecheck')}
                       </button>
                     </td>
                   </tr>

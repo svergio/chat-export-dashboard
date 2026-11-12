@@ -113,6 +113,28 @@ body {
   flex: 1;
 }
 
+.top-bar__refresh {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  font-size: 0.8rem;
+  color: var(--ce-text-muted);
+}
+
+.top-bar__refresh-label {
+  white-space: nowrap;
+}
+
+.top-bar__last-refresh {
+  white-space: nowrap;
+  opacity: 0.85;
+}
+
+.cache-summary {
+  margin-bottom: 1rem;
+}
+
 .top-bar__chrome {
   display: flex;
   gap: 0.5rem;
