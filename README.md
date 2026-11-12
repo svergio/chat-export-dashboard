@@ -1,4 +1,4 @@
-[English](README.md) | [Русский](README.ru.md) · [![Support on DonationAlerts](https://img.shields.io/badge/Support-DonationAlerts-orange)](https://www.donationalerts.com/r/svwergio_mel) · [![chat-export-server MCP server](https://glama.ai/mcp/servers/svergio/chat-export-server/badges/score.svg)](https://glama.ai/mcp/servers/svergio/chat-export-server)
+[English](README.md) | [Русский](README.ru.md) · [![Support on DonationAlerts](https://img.shields.io/badge/Support-DonationAlerts-orange)](https://www.donationalerts.com/r/svwergio_mel) · [![chat-export-server MCP server](https://glama.ai/mcp/servers/svergio/chat-export-server/badges/score.svg)](https://glama.ai/mcp/servers/svergio/chat-export-server) · [![MCP Servers](https://img.shields.io/badge/MCP_Servers-listed-2563eb)](https://mcpservers.org/ru/)
 
 # chat-export-dashboard
 
@@ -96,11 +96,15 @@ Tips are voluntary.
 
 ## Tests
 
-`main` stays free of `test/` suites per project policy; use branch `test` when adding CI.
+```bash
+npm test
+```
+
+CI (`.github/workflows/ci.yml`) runs `npm test` (locale + legal string parity), build, and audit on branches **`test`** and **`main`**.
 
 ## Contributing
 
-Dashboard skins and locales: [CONTRIBUTING.md](https://github.com/svergio/chat-export-extension/blob/main/CONTRIBUTING.md) (i18n and optional provider skins).
+See [CONTRIBUTING.md](./CONTRIBUTING.md) (locales, `LegalFooter`, embed sync into the server) and extension [CONTRIBUTING](https://github.com/svergio/chat-export-extension/blob/main/CONTRIBUTING.md) for cross-repo i18n.
 
 ## Dependencies
 

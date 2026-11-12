@@ -1,4 +1,4 @@
-[English](README.md) | [Русский](README.ru.md) · [![Поддержать на DonationAlerts](https://img.shields.io/badge/Поддержать-DonationAlerts-orange)](https://www.donationalerts.com/r/svwergio_mel) · [![chat-export-server MCP server](https://glama.ai/mcp/servers/svergio/chat-export-server/badges/score.svg)](https://glama.ai/mcp/servers/svergio/chat-export-server)
+[English](README.md) | [Русский](README.ru.md) · [![Поддержать на DonationAlerts](https://img.shields.io/badge/Поддержать-DonationAlerts-orange)](https://www.donationalerts.com/r/svwergio_mel) · [![chat-export-server MCP server](https://glama.ai/mcp/servers/svergio/chat-export-server/badges/score.svg)](https://glama.ai/mcp/servers/svergio/chat-export-server) · [![MCP Servers](https://img.shields.io/badge/MCP_Servers-listed-2563eb)](https://mcpservers.org/ru/)
 
 # chat-export-dashboard
 
@@ -78,9 +78,17 @@ React 19, TypeScript, Vite; восемь скинов (ChatGPT, Grok, Grok-X, Co
 
 - [DonationAlerts — svwergio_mel](https://www.donationalerts.com/r/svwergio_mel)
 
+## Тесты
+
+```bash
+npm test
+```
+
+CI (`.github/workflows/ci.yml`) на ветках **`test`** и **`main`**: `npm test` (паритет локалей и legal-строк), сборка, audit.
+
 ## Участие в разработке
 
-Скины и локали дашборда: [CONTRIBUTING.md](https://github.com/svergio/chat-export-extension/blob/main/CONTRIBUTING.md).
+См. [CONTRIBUTING.md](./CONTRIBUTING.md) (локали, `LegalFooter`, синхронизация embed в сервер) и [CONTRIBUTING extension](https://github.com/svergio/chat-export-extension/blob/main/CONTRIBUTING.md) для общей i18n.
 
 ## Зависимости
 
