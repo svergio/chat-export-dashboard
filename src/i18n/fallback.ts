@@ -44,5 +44,16 @@ export const FALLBACK_STRINGS: LocaleStrings = {
   overviewMcpLatency: 'Avg latency by tool',
   serverLog: 'server.log',
   alertsLog: 'alerts.log',
-  dashEmDash: '—'
+  dashEmDash: '—',
+  legalBadge: 'Open Source (MIT) · Legal & Risk Notice',
+  legalModalTitle: 'Legal Notice, Open-Source License & Account Risk Disclaimer',
+  legalOssLead:
+    'Chat Export (Extension, Server, Dashboard) is free open-source software distributed under the MIT License on an "AS IS" basis, without warranties or conditions of any kind.',
+  legalRiskLead:
+    'Automated manipulation of third-party web UIs and internal page APIs (ChatGPT, Grok, X Grok, Claude, Copilot, Qwen, DeepSeek, Perplexity) may violate provider Terms of Service and could result in rate-limiting, session invalidation, or account suspension/ban. You use export and MCP automation entirely at your own risk.',
+  legalLocalLead:
+    'All chat data, SQLite cache, and security keys (cem_, ceb_) remain strictly local on 127.0.0.1 with zero telemetry or external cloud relays.',
+  legalIssueLead:
+    'If a provider UI update breaks selectors or bridge actions, please report it on GitHub Issues:',
+  legalClose: 'Close notice'
 };

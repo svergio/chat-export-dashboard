@@ -151,5 +151,12 @@
   "browserSlotsHint": "Up to two Chrome profiles can connect. Install the extension in a second profile, enroll with a ceb_ key, and keep both browsers open.",
   "browserSlot": "Slot",
   "browserSlotEmpty": "No browser enrolled in this slot",
-  "browserSlotOfflineHelp": "Open the extension popup in another Chrome profile, connect to the hub, then enroll below."
+  "browserSlotOfflineHelp": "Open the extension popup in another Chrome profile, connect to the hub, then enroll below.",
+  "legalBadge": "Open Source (MIT) · Legal & Risk Notice",
+  "legalModalTitle": "Legal Notice, Open-Source License & Account Risk Disclaimer",
+  "legalOssLead": "Chat Export (Extension, Server, Dashboard) is free open-source software distributed under the MIT License on an \"AS IS\" basis, without warranties or conditions of any kind.",
+  "legalRiskLead": "Automated manipulation of third-party web UIs and internal page APIs (ChatGPT, Grok, X Grok, Claude, Copilot, Qwen, DeepSeek, Perplexity) may violate provider Terms of Service and could result in rate-limiting, session invalidation, or account suspension/ban. You use export and MCP automation entirely at your own risk.",
+  "legalLocalLead": "All chat data, SQLite cache, and security keys (cem_, ceb_) remain strictly local on 127.0.0.1 with zero telemetry or external cloud relays.",
+  "legalIssueLead": "If a provider UI update breaks selectors or bridge actions, please report it on GitHub Issues:",
+  "legalClose": "Close notice"
 }

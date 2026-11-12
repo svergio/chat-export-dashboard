@@ -2,6 +2,7 @@ import { FormEvent, useState } from 'react';
 import { api } from '../api/client';
 import { ApiClientError } from '../api/client';
 import { AppearanceControls } from './AppearanceControls';
+import { LegalFooter } from './LegalFooter';
 import type { LocalePref, SchemePref, Skin } from '../hooks/useTheme';
 
 type Props = {
@@ -89,6 +90,7 @@ export function LoginScreen({
           </form>
         </div>
       </section>
+      <LegalFooter t={t} />
     </div>
   );
 }

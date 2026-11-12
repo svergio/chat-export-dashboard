@@ -6,6 +6,7 @@ import { useLocale } from './hooks/useLocale';
 import { LoginScreen } from './components/LoginScreen';
 import { TopBar } from './components/TopBar';
 import { Sidebar } from './components/Sidebar';
+import { LegalFooter } from './components/LegalFooter';
 import { OverviewPage } from './pages/OverviewPage';
 import { BrowsersPage } from './pages/BrowsersPage';
 import { QueuesPage } from './pages/QueuesPage';
@@ -111,6 +112,7 @@ export function App() {
         <Sidebar t={t} section={section} onNavigate={setSection} />
         <main className="main">{panel}</main>
       </div>
+      <LegalFooter t={t} />
     </div>
   );
 }
