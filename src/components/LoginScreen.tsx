@@ -41,8 +41,11 @@ export function LoginScreen({
       const data = await api<{ username?: string }>('POST', '/login', { username, password });
       onSuccess(data.username || username);
     } catch (err) {
-      const msg = err instanceof ApiClientError ? err.message : t('loginFailed');
-      setError(msg || t('loginFailed'));
+      const raw = err instanceof ApiClientError ? err.message : '';
+      const isGenericAuth =
+        !raw ||
+        /invalid credentials|unauthorized|dashboard login required/i.test(raw);
+      setError(isGenericAuth ? t('loginFailed') : raw);
       setShowError(true);
     }
   };

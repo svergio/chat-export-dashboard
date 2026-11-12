@@ -36,7 +36,7 @@ export function TopBar({
         <span className="mono">{username}</span>
       </div>
       <span className="top-bar__spacer" />
-      <div className="top-bar__chrome" aria-label="Locale and theme">
+      <div className="top-bar__chrome" aria-label={t('ariaLocaleTheme')}>
         <AppearanceControls
           t={t}
           localePref={localePref}

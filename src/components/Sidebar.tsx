@@ -16,7 +16,7 @@ const SECTIONS: { id: Section; key: string }[] = [
 
 export function Sidebar({ t, section, onNavigate }: Props) {
   return (
-    <nav className="sidebar" aria-label="Sections">
+    <nav className="sidebar" aria-label={t('ariaSections')}>
       {SECTIONS.map(({ id, key }) => (
         <button
           key={id}

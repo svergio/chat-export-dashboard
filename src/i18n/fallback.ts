@@ -3,7 +3,7 @@ import type { LocaleStrings } from '../types/api';
 export const FALLBACK_STRINGS: LocaleStrings = {
   appTitle: 'Chat Export',
   loginTitle: 'Dashboard sign-in',
-  loginHint: 'Session cookie is scoped to /dashboard.',
+  loginHint: 'Local sign-in. You stay signed in until you sign out.',
   username: 'Username',
   password: 'Password',
   signIn: 'Sign in',
@@ -55,5 +55,18 @@ export const FALLBACK_STRINGS: LocaleStrings = {
     'All chat data, SQLite cache, and security keys (cem_, ceb_) remain strictly local on 127.0.0.1 with zero telemetry or external cloud relays.',
   legalIssueLead:
     'If a provider UI update breaks selectors or bridge actions, please report it on GitHub Issues:',
-  legalClose: 'Close notice'
+  legalClose: 'Close notice',
+  cancelJobConfirm: 'Cancel this job?',
+  issuesExtension: 'Extension Issues',
+  issuesServer: 'Server Issues',
+  ariaSections: 'Sections',
+  ariaLocaleTheme: 'Locale and theme',
+  tabsOne: 'tab',
+  tabsFew: 'tabs',
+  tabsMany: 'tabs',
+  thPlatforms: 'Platforms',
+  platformsOffline: 'Offline (unknown)',
+  platformsNoneReported: 'None reported',
+  destructiveServerOffWarn:
+    'Delete is on for this browser, but off on the server — deletes stay blocked until you allow them in server settings.'
 };

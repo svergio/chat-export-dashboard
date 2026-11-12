@@ -23,7 +23,16 @@ type Props = {
   onUnauthorized: () => void;
 };
 
-function ProgressCell({ progress, t }: { progress: unknown; t: (key: string) => string }) {
+function ProgressCell({
+  progress,
+  terminal,
+  t
+}: {
+  progress: unknown;
+  terminal: boolean;
+  t: (key: string) => string;
+}) {
+  if (terminal) return <span>{t('dashEmDash')}</span>;
   const { label, pct, current } = formatJobProgress(progress);
   if (!label && !current) return <span>{t('dashEmDash')}</span>;
   return (
@@ -106,8 +115,9 @@ export function QueuesPage({ t, onUnauthorized }: Props) {
   }, [jobs, t]);
 
   const onCancel = async (jobId: string) => {
+    if (!confirm(t('cancelJobConfirm'))) return;
     try {
-      await api('POST', '/jobs/cancel', { jobId });
+      await api('POST', '/jobs/cancel', { jobId, confirm: true });
       await load();
     } catch (err) {
       alert(err instanceof Error ? err.message : String(err));
@@ -240,7 +250,7 @@ export function QueuesPage({ t, onUnauthorized }: Props) {
                     <td>{j.platform || t('dashEmDash')}</td>
                     <td className="mono">{j.browserId || t('dashEmDash')}</td>
                     <td>
-                      <ProgressCell progress={j.progress} t={t} />
+                      <ProgressCell progress={j.progress} terminal={terminal} t={t} />
                     </td>
                     <td>{formatDate(j.updatedAt, t('dashEmDash'))}</td>
                     <td>

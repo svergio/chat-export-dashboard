@@ -1,6 +1,6 @@
 import { FormEvent, useCallback, useEffect, useState } from 'react';
 import { api, ApiClientError } from '../api/client';
-import type { BrowserRow, McpTokenInfo } from '../types/api';
+import type { BrowserRow, McpTokenInfo, ServerSettingsSummary } from '../types/api';
 import { StatusBadge } from '../components/StatusBadge';
 import { formatDate, mcpSnippet } from '../utils/format';
 
@@ -9,9 +9,16 @@ type Props = {
   onUnauthorized: () => void;
 };
 
+function formatTabCount(n: number, t: (key: string) => string): string {
+  if (n === 1) return `1 ${t('tabsOne')}`;
+  if (n >= 2 && n <= 4) return `${n} ${t('tabsFew')}`;
+  return `${n} ${t('tabsMany')}`;
+}
+
 export function BrowsersPage({ t, onUnauthorized }: Props) {
   const [mcp, setMcp] = useState<McpTokenInfo | null>(null);
   const [browsers, setBrowsers] = useState<BrowserRow[]>([]);
+  const [serverSettings, setServerSettings] = useState<ServerSettingsSummary | null>(null);
   const [enrollMsg, setEnrollMsg] = useState<{ kind: 'ok' | 'error'; text: string } | null>(null);
   const [rotateToken, setRotateToken] = useState<string | null>(null);
 
@@ -22,8 +29,12 @@ export function BrowsersPage({ t, onUnauthorized }: Props) {
 
   const loadBrowsers = useCallback(async () => {
     try {
-      const data = await api<{ browsers: BrowserRow[] }>('GET', '/browsers');
+      const data = await api<{ browsers: BrowserRow[]; serverSettings?: ServerSettingsSummary }>(
+        'GET',
+        '/browsers'
+      );
       setBrowsers(data.browsers || []);
+      setServerSettings(data.serverSettings || null);
     } catch (err) {
       if (err instanceof ApiClientError && err.status === 401) onUnauthorized();
     }
@@ -44,7 +55,7 @@ export function BrowsersPage({ t, onUnauthorized }: Props) {
   const onRotate = async () => {
     if (!confirm(t('rotateMcpConfirm'))) return;
     try {
-      const data = await api<{ token: string }>('POST', '/mcp-token/rotate');
+      const data = await api<{ token: string }>('POST', '/mcp-token/rotate', { confirm: true });
       setRotateToken(data.token);
       await loadMcp();
     } catch (err) {
@@ -87,10 +98,18 @@ export function BrowsersPage({ t, onUnauthorized }: Props) {
 
   const active = mcp?.active;
   const online = browsers.filter((b) => b.status === 'online' && b.tabs?.length);
+  const destructiveMismatch = Boolean(
+    serverSettings &&
+      !serverSettings.allowDestructive &&
+      browsers.some((b) => b.allowDestructive)
+  );
 
   return (
     <section className="panel panel--active">
       <h2>{t('navBrowsers')}</h2>
+      {destructiveMismatch ? (
+        <div className="msg msg--warn">{t('destructiveServerOffWarn')}</div>
+      ) : null}
       <div className="grid-2">
         <div className="card">
           <h3>{t('mcpServerToken')}</h3>
@@ -202,6 +221,7 @@ export function BrowsersPage({ t, onUnauthorized }: Props) {
           const row = browsers[slot];
           const slotOnline = row?.status === 'online';
           const tone = slotOnline ? 'ok' : row ? 'warn' : 'muted';
+          const liveTabs = slotOnline && row.tabs?.length ? row.tabs.length : 0;
           return (
             <div key={slot} className={`browser-slot card browser-slot--${tone}`}>
               <div className="browser-slot__head">
@@ -215,7 +235,7 @@ export function BrowsersPage({ t, onUnauthorized }: Props) {
                   <p className="browser-slot__id mono">{row.browserId}</p>
                   <p className="browser-slot__meta">
                     {row.browserLabel || t('dashEmDash')} · {row.status}
-                    {row.tabs?.length ? ` · ${row.tabs.length} ${t('thTabs').toLowerCase()}` : ''}
+                    {liveTabs ? ` · ${formatTabCount(liveTabs, t)}` : ''}
                   </p>
                 </>
               ) : (
@@ -237,6 +257,7 @@ export function BrowsersPage({ t, onUnauthorized }: Props) {
               <th>{t('thLabel')}</th>
               <th>{t('thStatus')}</th>
               <th>{t('thFlags')}</th>
+              <th>{t('thPlatforms')}</th>
               <th>{t('thTabs')}</th>
               <th>{t('thBound')}</th>
               <th>{t('thFingerprint')}</th>
@@ -253,7 +274,14 @@ export function BrowsersPage({ t, onUnauthorized }: Props) {
                 ]
                   .filter(Boolean)
                   .join(', ') || t('dashEmDash');
-                const tabs = Array.isArray(b.tabs) ? b.tabs.length : 0;
+                const onlineBrowser = b.status === 'online';
+                const tabs = onlineBrowser && Array.isArray(b.tabs) ? b.tabs.length : 0;
+                const platforms =
+                  onlineBrowser && Array.isArray(b.platformsEnabled) && b.platformsEnabled.length
+                    ? b.platformsEnabled.join(', ')
+                    : onlineBrowser
+                      ? t('platformsNoneReported')
+                      : t('platformsOffline');
                 return (
                   <tr key={b.browserId}>
                     <td className="mono">{b.browserId}</td>
@@ -262,7 +290,8 @@ export function BrowsersPage({ t, onUnauthorized }: Props) {
                       <StatusBadge status={b.status} />
                     </td>
                     <td>{flags}</td>
-                    <td>{tabs}</td>
+                    <td>{platforms}</td>
+                    <td>{onlineBrowser ? tabs : t('dashEmDash')}</td>
                     <td>{b.bound ? t('yes') : t('dashEmDash')}</td>
                     <td className="mono">{b.fingerprint || t('dashEmDash')}</td>
                     <td>
@@ -275,7 +304,7 @@ export function BrowsersPage({ t, onUnauthorized }: Props) {
               })
             ) : (
               <tr>
-                <td colSpan={8} className="empty-hint">
+                <td colSpan={9} className="empty-hint">
                   {t('noBrowsersEnrolled')}
                 </td>
               </tr>

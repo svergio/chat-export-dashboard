@@ -41,10 +41,10 @@ export function App() {
     let cancelled = false;
     (async () => {
       try {
-        await api('GET', '/overview');
+        const session = await api<{ username?: string }>('GET', '/session');
         if (!cancelled) {
-          setUser('admin');
-          setServerOk(true);
+          setUser(session.username || null);
+          setServerOk(Boolean(session.username));
         }
       } catch (err) {
         if (cancelled) return;

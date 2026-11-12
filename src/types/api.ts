@@ -37,6 +37,11 @@ export type OverviewResponse = {
   resources?: OverviewResources;
 };
 
+export type ServerSettingsSummary = {
+  platformsEnabled: string[];
+  allowDestructive: boolean;
+};
+
 export type BrowserRow = {
   browserId: string;
   browserLabel: string;
@@ -44,6 +49,7 @@ export type BrowserRow = {
   allowCreate?: boolean;
   allowProjects?: boolean;
   allowDestructive?: boolean;
+  platformsEnabled?: string[];
   tabs?: { platform?: string; url?: string; title?: string }[];
   bound?: boolean;
   fingerprint?: string;

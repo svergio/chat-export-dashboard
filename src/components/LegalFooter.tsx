@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 
 type Props = {
   t: (key: string) => string;
@@ -6,20 +6,53 @@ type Props = {
 
 export function LegalFooter({ t }: Props) {
   const [open, setOpen] = useState(false);
+  const titleId = useId();
+  const closeRef = useRef<HTMLButtonElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     if (!open) return;
+    const prev = document.activeElement as HTMLElement | null;
+    closeRef.current?.focus();
     const onKey = (ev: KeyboardEvent) => {
-      if (ev.key === 'Escape') setOpen(false);
+      if (ev.key === 'Escape') {
+        ev.preventDefault();
+        setOpen(false);
+        return;
+      }
+      if (ev.key !== 'Tab' || !closeRef.current) return;
+      const root = closeRef.current.closest('.legal-modal');
+      if (!root) return;
+      const focusable = root.querySelectorAll<HTMLElement>(
+        'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])'
+      );
+      if (focusable.length === 0) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (ev.shiftKey && document.activeElement === first) {
+        ev.preventDefault();
+        last.focus();
+      } else if (!ev.shiftKey && document.activeElement === last) {
+        ev.preventDefault();
+        first.focus();
+      }
     };
     window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
+    return () => {
+      window.removeEventListener('keydown', onKey);
+      if (prev && typeof prev.focus === 'function') {
+        prev.focus();
+      } else {
+        triggerRef.current?.focus();
+      }
+    };
   }, [open]);
 
   return (
     <>
       <footer className="legal-footer" role="contentinfo">
         <button
+          ref={triggerRef}
           type="button"
           className="legal-footer__trigger"
           onClick={() => setOpen(true)}
@@ -37,7 +70,7 @@ export function LegalFooter({ t }: Props) {
             target="_blank"
             rel="noopener noreferrer"
           >
-            Extension Issues
+            {t('issuesExtension')}
           </a>
           <span className="legal-footer__sep" aria-hidden="true">
             ·
@@ -47,16 +80,12 @@ export function LegalFooter({ t }: Props) {
             target="_blank"
             rel="noopener noreferrer"
           >
-            Server Issues
+            {t('issuesServer')}
           </a>
           <span className="legal-footer__sep" aria-hidden="true">
             ·
           </span>
-          <a
-            href="https://mcpservers.org/ru/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+          <a href="https://mcpservers.org/ru/" target="_blank" rel="noopener noreferrer">
             mcpservers.org
           </a>
         </div>
@@ -72,17 +101,21 @@ export function LegalFooter({ t }: Props) {
             className="legal-modal"
             role="dialog"
             aria-modal="true"
-            aria-labelledby="legal-modal-title"
+            aria-labelledby={titleId}
             onClick={(ev) => ev.stopPropagation()}
           >
             <div className="legal-modal__head">
-              <h2 id="legal-modal-title">{t('legalModalTitle')}</h2>
+              <h2 id={titleId} className="legal-modal__title">
+                {t('legalModalTitle')}
+              </h2>
               <button
+                ref={closeRef}
                 type="button"
-                className="btn btn--sm"
+                className="legal-modal__close"
                 onClick={() => setOpen(false)}
+                aria-label={t('legalClose')}
               >
-                {t('legalClose')}
+                <span aria-hidden="true">&times;</span>
               </button>
             </div>
             <div className="legal-modal__body">
