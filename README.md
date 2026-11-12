@@ -10,6 +10,10 @@
 
 Works with the [Chat Export extension](https://github.com/svergio/chat-export-extension) bridge; no cloud account required.
 
+## Standalone
+
+The dashboard is an **optional** operator UI for `chat-export-server`. The Chat Export product does not require Cursor, Chrome DevTools MCP, Open WebUI, or vendored local-agent code — only the extension + server (+ this UI if you want it).
+
 ## The problem
 
 MCP and CLI are powerful but opaque when jobs stall, a browser drops offline, or you need to copy logs. The dashboard gives a **local-only** control plane with the same security boundary as the server.
