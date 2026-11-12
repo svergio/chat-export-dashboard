@@ -4,6 +4,7 @@ import { ApiClientError } from '../api/client';
 import { AppearanceControls } from './AppearanceControls';
 import { LegalFooter } from './LegalFooter';
 import type { LocalePref, SchemePref, Skin } from '../hooks/useTheme';
+import type { FontPref, UiSizePref } from '../hooks/useUiPrefs';
 
 type Props = {
   t: (key: string) => string;
@@ -12,9 +13,13 @@ type Props = {
   localePref: LocalePref;
   schemePref: SchemePref;
   skin: Skin;
+  fontPref: FontPref;
+  uiSizePref: UiSizePref;
   onLocale: (v: LocalePref) => void;
   onScheme: (v: SchemePref) => void;
   onSkin: (v: Skin) => void;
+  onFont: (v: FontPref) => void;
+  onUiSize: (v: UiSizePref) => void;
 };
 
 export function LoginScreen({
@@ -24,9 +29,13 @@ export function LoginScreen({
   localePref,
   schemePref,
   skin,
+  fontPref,
+  uiSizePref,
   onLocale,
   onScheme,
-  onSkin
+  onSkin,
+  onFont,
+  onUiSize
 }: Props) {
   const [error, setError] = useState(initialError ?? '');
   const [showError, setShowError] = useState(Boolean(initialError));
@@ -59,9 +68,13 @@ export function LoginScreen({
           localePref={localePref}
           schemePref={schemePref}
           skin={skin}
+          fontPref={fontPref}
+          uiSizePref={uiSizePref}
           onLocale={onLocale}
           onScheme={onScheme}
           onSkin={onSkin}
+          onFont={onFont}
+          onUiSize={onUiSize}
           compact
         />
       </header>

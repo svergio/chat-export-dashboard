@@ -1,6 +1,6 @@
 {
   "name": "chat-export-dashboard",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Web dashboard for chat-export-server (git submodule under server/dashboard).",
   "private": true,
   "license": "MIT",

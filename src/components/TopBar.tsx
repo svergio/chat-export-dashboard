@@ -1,6 +1,7 @@
 import { StatusDot } from './StatusDot';
 import { AppearanceControls } from './AppearanceControls';
 import type { LocalePref, SchemePref, Skin } from '../hooks/useTheme';
+import type { FontPref, UiSizePref } from '../hooks/useUiPrefs';
 import { REFRESH_INTERVALS, useDashboardRefresh } from '../hooks/useDashboardRefresh';
 
 type Props = {
@@ -10,9 +11,13 @@ type Props = {
   localePref: LocalePref;
   schemePref: SchemePref;
   skin: Skin;
+  fontPref: FontPref;
+  uiSizePref: UiSizePref;
   onLocale: (v: LocalePref) => void;
   onScheme: (v: SchemePref) => void;
   onSkin: (v: Skin) => void;
+  onFont: (v: FontPref) => void;
+  onUiSize: (v: UiSizePref) => void;
   onLogout: () => void;
 };
 
@@ -32,9 +37,13 @@ export function TopBar({
   localePref,
   schemePref,
   skin,
+  fontPref,
+  uiSizePref,
   onLocale,
   onScheme,
   onSkin,
+  onFont,
+  onUiSize,
   onLogout
 }: Props) {
   const { intervalMs, setIntervalMs, lastRefreshAt, refreshNow } = useDashboardRefresh();
@@ -75,9 +84,13 @@ export function TopBar({
           localePref={localePref}
           schemePref={schemePref}
           skin={skin}
+          fontPref={fontPref}
+          uiSizePref={uiSizePref}
           onLocale={onLocale}
           onScheme={onScheme}
           onSkin={onSkin}
+          onFont={onFont}
+          onUiSize={onUiSize}
           compact
         />
         <button type="button" className="btn btn--sm" onClick={onLogout}>

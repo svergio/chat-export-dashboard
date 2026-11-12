@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { api, ApiClientError } from './api/client';
 import type { Section } from './types/api';
 import { useTheme } from './hooks/useTheme';
+import { useUiPrefs } from './hooks/useUiPrefs';
 import { useLocale } from './hooks/useLocale';
 import { DashboardRefreshProvider } from './hooks/useDashboardRefresh';
 import { LoginScreen } from './components/LoginScreen';
@@ -17,6 +18,7 @@ import { LogsPage } from './pages/LogsPage';
 export function App() {
   const { skin, schemePref, localePref, locale, setSkin, setSchemePref, setLocalePref } =
     useTheme();
+  const { fontPref, uiSizePref, setFontPref, setUiSizePref } = useUiPrefs();
   const { t } = useLocale(locale);
   const [user, setUser] = useState<string | null>(null);
   const [section, setSection] = useState<Section>('overview');
@@ -70,9 +72,13 @@ export function App() {
         localePref={localePref}
         schemePref={schemePref}
         skin={skin}
+        fontPref={fontPref}
+        uiSizePref={uiSizePref}
         onLocale={setLocalePref}
         onScheme={setSchemePref}
         onSkin={setSkin}
+        onFont={setFontPref}
+        onUiSize={setUiSizePref}
         onSuccess={(username) => {
           setBootError(undefined);
           setUser(username);
@@ -105,9 +111,13 @@ export function App() {
           localePref={localePref}
           schemePref={schemePref}
           skin={skin}
+          fontPref={fontPref}
+          uiSizePref={uiSizePref}
           onLocale={setLocalePref}
           onScheme={setSchemePref}
           onSkin={setSkin}
+          onFont={setFontPref}
+          onUiSize={setUiSizePref}
           onLogout={() => void onLogout()}
         />
         <div className="layout">
