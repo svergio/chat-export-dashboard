@@ -78,6 +78,16 @@ React 19, TypeScript, Vite; восемь скинов (ChatGPT, Grok, Grok-X, Co
 
 Скины и локали дашборда: [CONTRIBUTING.md](https://github.com/svergio/chat-export-extension/blob/main/CONTRIBUTING.md).
 
+## Зависимости
+
+**Runtime:** React 19 + react-dom (Vite/TypeScript только для сборки; в проде — статика `public/`).
+
+**Связка:** встраивается в [chat-export-server](https://github.com/svergio/chat-export-server) на `/dashboard/`; API с того же origin. [Расширение](https://github.com/svergio/chat-export-extension) не добавляет npm-зависимостей сюда. Общий wire-контракт — `packages/protocol/` в сервере.
+
+Docker (опционально): сборка Node + **nginx:1.27-alpine**. См. [THIRD_PARTY_NOTICES.md](./THIRD_PARTY_NOTICES.md), `npm run licenses`.
+
+**Не обязательны:** Cursor, Open WebUI, BibLLMsteak, Bonsai-27B, NodeRed.
+
 ## Лицензия
 
 [LICENSE](LICENSE).

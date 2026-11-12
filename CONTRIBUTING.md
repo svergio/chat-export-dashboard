@@ -22,6 +22,8 @@ npm run preview      # serve production build locally
 
 `vite.config.ts` sets `base: '/dashboard/'` and `publicDir: 'static'` so locale and CSS files copy into `public/` on build.
 
+If `dependencies` change, run `npm run licenses` and commit [THIRD_PARTY_NOTICES.md](./THIRD_PARTY_NOTICES.md) when the notice file differs.
+
 ## Locales and legal notice
 
 | File | Role |

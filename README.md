@@ -98,6 +98,16 @@ Tips are voluntary.
 
 Dashboard skins and locales: [CONTRIBUTING.md](https://github.com/svergio/chat-export-extension/blob/main/CONTRIBUTING.md) (i18n and optional provider skins).
 
+## Dependencies
+
+**Runtime:** React 19 + react-dom (Vite/TypeScript are dev-only; production is static `public/`).
+
+**Product graph:** built into [chat-export-server](https://github.com/svergio/chat-export-server) at `/dashboard/`; API calls stay on the same origin as the server. The [extension](https://github.com/svergio/chat-export-extension) bridge does not add npm deps here. Shared wire types: server `packages/protocol/`.
+
+Docker (optional): Node builder + **nginx:1.27-alpine** serving compiled assets. See [THIRD_PARTY_NOTICES.md](./THIRD_PARTY_NOTICES.md); refresh with `npm run licenses`.
+
+**Not required:** Cursor, Open WebUI, BibLLMsteak, Bonsai-27B, NodeRed — not runtime dependencies.
+
 ## License
 
 See [LICENSE](LICENSE).
