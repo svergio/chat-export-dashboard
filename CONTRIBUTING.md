@@ -1,5 +1,7 @@
 # Contributing to chat-export-dashboard
 
+[English](CONTRIBUTING.md) | [Русский](CONTRIBUTING.ru.md)
+
 React + Vite dashboard for [chat-export-server](https://github.com/svergio/chat-export-server). Static build output is embedded under the server at `chat-export-server/dashboard/public/`.
 
 Do not add `Co-authored-by` trailers to commits. Open feature PRs against `main`; land heavier test changes on branch `test` first when CI policy requires it.

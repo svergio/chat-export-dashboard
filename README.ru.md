@@ -85,7 +85,7 @@ CI (`.github/workflows/ci.yml`) на ветках **`test`** и **`main`**: `npm
 
 ## Участие в разработке
 
-См. [CONTRIBUTING.md](./CONTRIBUTING.md) (локали, `LegalFooter`, синхронизация embed в сервер) и [CONTRIBUTING extension](https://github.com/svergio/chat-export-extension/blob/main/CONTRIBUTING.md) для общей i18n.
+См. [CONTRIBUTING.ru.md](./CONTRIBUTING.ru.md) · [CONTRIBUTING.md](./CONTRIBUTING.md) (локали, `LegalFooter`, sync embed) и [CONTRIBUTING extension (RU)](https://github.com/svergio/chat-export-extension/blob/main/CONTRIBUTING.ru.md).
 
 ## Зависимости
 
