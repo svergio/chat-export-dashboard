@@ -16,7 +16,11 @@ export type Skin =
   | 'claude'
   | 'qwen'
   | 'deepseek'
-  | 'perplexity';
+  | 'perplexity'
+  | 'kimi'
+  | 'zai'
+  | 'minimax'
+  | 'janitorai';
 export type SchemePref = 'dark' | 'light' | 'auto';
 
 function resolveScheme(schemePref: SchemePref): 'dark' | 'light' {

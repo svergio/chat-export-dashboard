@@ -46,7 +46,11 @@ function skinLabel(skin: Skin, t: (key: string) => string): string {
     claude: 'skinClaude',
     qwen: 'skinQwen',
     deepseek: 'skinDeepseek',
-    perplexity: 'skinPerplexity'
+    perplexity: 'skinPerplexity',
+    kimi: 'skinKimi',
+    zai: 'skinZai',
+    minimax: 'skinMinimax',
+    janitorai: 'skinJanitorai'
   };
   return t(map[skin]);
 }
